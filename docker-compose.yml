@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # PARTIE 1 : INFRASTRUCTURE PAYS (BRESIL)
+  # ==========================================
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: country-mqtt
+    networks:
+      - country-net
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+    restart: always
+
+  db-pays:
+    image: postgres:15-alpine
+    container_name: country-db
+    networks:
+      - country-net
+    environment:
+      POSTGRES_USER: admin_pays
+      POSTGRES_PASSWORD: password_pays
+      POSTGRES_DB: db_bresil
+    ports:
+      - "5433:5432" # Port externe 5433 pour ne pas avoir de conflit avec le siège
+    volumes:
+      - pays_data:/var/lib/postgresql/data
+      - ./postgres/init_pays.sql:/docker-entrypoint-initdb.d/init_pays.sql
+
+    restart: always
+
+  adminer-pays:
+    image: adminer
+    container_name: country-adminer
+    networks:
+      - country-net
+    ports:
+      - "8081:8080" # Accès Adminer Pays sur http://localhost:8081
+    restart: always
+
+  backend-pays:
+    image: selimdrici/backend_future_kawa:latest
+    container_name: country-backend
+    networks:
+      - country-net
+      - global-net # Réseau partagé pour parler à la BDD du siège
+    depends_on:
+      - db-pays
+      - mqtt-broker
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://country-db:5432/db_bresil
+      SPRING_DATASOURCE_USERNAME: admin_pays
+      SPRING_DATASOURCE_PASSWORD: password_pays
+      MQTT_BROKER_URI: tcp://country-mqtt:1883
+      # Configuration pour que le pays puisse écrire/lire au siège via Docker
+      SIEGE_DB_HOST: siege-db
+    restart: always
+
+  # ==========================================
+  # PARTIE 2 : INFRASTRUCTURE SIÈGE (FRANCE)
+  # ==========================================
+  db-siege:
+    image: postgres:15-alpine
+    container_name: siege-db
+    networks:
+      - global-net # Sur le réseau global pour être vu par le pays
+    environment:
+      POSTGRES_USER: admin_siege
+      POSTGRES_PASSWORD: password_siege
+      POSTGRES_DB: db_siege_mondial
+    ports:
+      - "5434:5432" # Port externe 5434
+    volumes:
+      - siege_data:/var/lib/postgresql/data
+    restart: always
+
+  adminer-siege:
+    image: adminer
+    container_name: siege-adminer
+    networks:
+      - global-net
+    ports:
+      - "8083:8080" # Accès Adminer Siège sur http://localhost:8083
+    restart: always
+
+# ==========================================
+# RÉSEAUX ET VOLUMES
+# ==========================================
+networks:
+  country-net: # Réseau privé du pays (IoT + BDD locale)
+  global-net:  # Réseau d'échange entre le Pays et le Siège
+
+volumes:
+  pays_data:
+  siege_data:

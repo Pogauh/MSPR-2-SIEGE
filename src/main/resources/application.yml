@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/futurekawa_siege
-    username: ${DB_USER:admin}
-    password: ${DB_PASSWORD:password123}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5434}/db_siege_mondial
+    username: ${DB_USER:admin_siege}
+    password: ${DB_PASSWORD:password_siege}
     driver-class-name: org.postgresql.Driver
 
   jpa:

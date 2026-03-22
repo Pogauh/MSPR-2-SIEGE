@@ -1,4 +1,4 @@
-package com.backendSiege.backend_siege;
+package com.backendSiege;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

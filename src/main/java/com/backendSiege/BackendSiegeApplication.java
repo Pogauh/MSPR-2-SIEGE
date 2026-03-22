@@ -1,4 +1,4 @@
-package com.backendSiege.backend_siege;
+package com.backendSiege;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,0 +1,18 @@
+1774198215: mosquitto version 2.1.2 starting
+1774198215: Config loaded from /mosquitto/config/mosquitto.conf.
+1774198215: Bridge support available.
+1774198215: Persistence support available.
+1774198215: TLS support available.
+1774198215: TLS-PSK support available.
+1774198215: Websockets support available.
+1774198215: Opening ipv4 listen socket on port 1883.
+1774198215: Opening ipv6 listen socket on port 1883.
+1774198215: mosquitto version 2.1.2 running
+1774198226: New connection from 172.20.0.5:58908 on port 1883.
+1774198227: New client connected from 172.20.0.5:58908 as java-backend-client (p4, c1, k60).
+1774198227: New connection from 172.20.0.5:58918 on port 1883.
+1774198227: New client connected from 172.20.0.5:58918 as java-backend-sender (p4, c1, k60).
+1774199054: Client java-backend-client [172.20.0.5:58908] disconnected.
+1774199059: Client java-backend-sender [172.20.0.5:58918] disconnected.
+1774199059: mosquitto version 2.1.2 terminating
+1774199059: Saving in-memory database to /mosquitto/data//mosquitto.db.
