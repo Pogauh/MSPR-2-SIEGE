@@ -27,5 +27,8 @@ public class EntrepotEntity {
 
     @Column(name = "nom", length = 50)
     private String nom;
+
+    @Column(name = "pays", length = 50)
+    private String pays;
 }
 

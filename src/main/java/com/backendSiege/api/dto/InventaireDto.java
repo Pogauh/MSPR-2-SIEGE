@@ -14,10 +14,10 @@ public class InventaireDto {
     private Integer caracteristique;
     private LocalDateTime dateSortie;
     private LocalDateTime dateStockage;
-    private String entrepotNom;
+    private String entrepot;
     private String entrepotLocalisation;
-    private String exploitationNom;
+    private String exploitation;
     private String exploitationAdresse;
-    private String paysNom;
+    private String pays;
 }
 

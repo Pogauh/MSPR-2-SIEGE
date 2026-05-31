@@ -1,14 +1,14 @@
 package com.backendSiege.api.controller;
 
-import com.backendSiege.api.dto.InventaireDto;
-import com.backendSiege.api.mapper.InventaireDtoMapper;
 import com.backendSiege.domain.service.InventaireService;
-import org.springframework.http.HttpStatus;
+import com.backendSiege.api.dto.LotResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
 import java.util.List;
 
 @RestController
@@ -16,24 +16,33 @@ import java.util.List;
 public class InventaireController {
 
     private final InventaireService inventaireService;
-    private final InventaireDtoMapper inventaireDtoMapper;
 
-    public InventaireController(InventaireService inventaireService, InventaireDtoMapper inventaireDtoMapper) {
+    public InventaireController(InventaireService inventaireService) {
         this.inventaireService = inventaireService;
-        this.inventaireDtoMapper = inventaireDtoMapper;
     }
 
-    @GetMapping("/inventaires/mondial")
-    public ResponseEntity<List<InventaireDto>> getInventaireMondial() {
-        try {
-            List<InventaireDto> inventaires = inventaireDtoMapper.toDto(inventaireService.getInventaireMondial());
-            if (inventaires.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.ok(inventaires);
-        } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    @GetMapping("/inventaires/total")
+    public ResponseEntity<Integer> getQuantiteTotale() {
+        Integer volume = inventaireService.getQuantiteTotale();
+        System.out.println("Volume total de l'inventaire mondial : " + volume);
+        if (volume == 0) {
+            return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.ok(volume);
+    }
+
+    @GetMapping("/lot/{id}")
+    public ResponseEntity<LotResponseDTO> getLotById(@PathVariable UUID id) {
+        LotResponseDTO lot = inventaireService.getLotById(id);
+        if (lot == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(lot);
+    }
+
+    @GetMapping("/lots")
+    public ResponseEntity<List<LotResponseDTO>> getAllLots() {
+        List<LotResponseDTO> lots = inventaireService.getAllLots();
+        return ResponseEntity.ok(lots);
     }
 }
-

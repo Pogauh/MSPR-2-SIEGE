@@ -42,7 +42,7 @@ services:
     restart: always
 
   backend-pays:
-    image: selimdrici/backend_future_kawa:latest
+    image: selimdrici/backend_future_kawa:1.1.2-SNAPSHOT
     container_name: country-backend
     networks:
       - country-net

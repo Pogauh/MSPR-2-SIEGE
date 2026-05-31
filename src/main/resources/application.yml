@@ -13,3 +13,8 @@ spring:
       hibernate:
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+country:
+  api:
+    base-urls: ${COUNTRY_API_BASE_URLS:http://localhost:8080/api/}
+

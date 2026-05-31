@@ -48,9 +48,4 @@ public class InventaireEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_exploitation", nullable = false)
     private ExploitationEntity exploitation;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_pays", nullable = false)
-    private PaysEntity pays;
 }
-

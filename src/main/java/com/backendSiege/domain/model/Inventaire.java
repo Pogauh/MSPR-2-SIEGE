@@ -16,6 +16,5 @@ public class Inventaire {
     private final LocalDateTime dateStockage;
     private final Entrepot entrepot;
     private final Exploitation exploitation;
-    private final Pays pays;
 }
 
