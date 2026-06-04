@@ -20,4 +20,3 @@ public class InventaireDto {
     private String exploitationAdresse;
     private String pays;
 }
-

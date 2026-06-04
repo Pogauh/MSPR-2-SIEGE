@@ -14,4 +14,3 @@ public class Mesure {
     private final LocalDateTime dateMesure;
     private final Capteur capteur;
 }
-

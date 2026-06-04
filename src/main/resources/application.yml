@@ -20,4 +20,3 @@ app:
       "BRESIL": ${URL_BRESIL:http://localhost:8080/api/}
       "COLOMBIE": "http://localhost:8085/api/"
       "EQUATEUR": "http://localhost:8088/api/"
-

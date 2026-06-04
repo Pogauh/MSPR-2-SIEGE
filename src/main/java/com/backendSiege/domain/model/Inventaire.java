@@ -17,4 +17,3 @@ public class Inventaire {
     private final Entrepot entrepot;
     private final Exploitation exploitation;
 }
-

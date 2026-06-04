@@ -14,4 +14,3 @@ public class Capteur {
     private final String tempAvg;
     private final Entrepot entrepot;
 }
-
