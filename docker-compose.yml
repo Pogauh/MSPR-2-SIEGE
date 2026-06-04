@@ -6,57 +6,57 @@ services:
   # ==========================================
   mqtt-broker:
     image: eclipse-mosquitto:latest
-    container_name: country-mqtt
+    container_name: bresil-mqtt
     networks:
-      - country-net
+      - bresil-net
     ports:
       - "1883:1883"
     volumes:
       - ./mosquitto/config:/mosquitto/config
     restart: always
 
-  db-pays:
+  db-bresil:
     image: postgres:15-alpine
-    container_name: country-db
+    container_name: bresil-db
     networks:
-      - country-net
+      - bresil-net
     environment:
-      POSTGRES_USER: admin_pays
-      POSTGRES_PASSWORD: password_pays
+      POSTGRES_USER: admin_bresil
+      POSTGRES_PASSWORD: password_bresil
       POSTGRES_DB: db_bresil
     ports:
       - "5433:5432" # Port externe 5433 pour ne pas avoir de conflit avec le siège
     volumes:
       - pays_data:/var/lib/postgresql/data
-      - ./postgres/init_pays.sql:/docker-entrypoint-initdb.d/init_pays.sql
+      - ./postgres/init_bresil.sql:/docker-entrypoint-initdb.d/init_bresil.sql
 
     restart: always
 
-  adminer-pays:
+  adminer-bresil:
     image: adminer
-    container_name: country-adminer
+    container_name: bresil-adminer
     networks:
-      - country-net
+      - bresil-net
     ports:
-      - "8081:8080" # Accès Adminer Pays sur http://localhost:8081
+      - "8081:8080" # Accès Adminer bresil sur http://localhost:8081
     restart: always
 
-  backend-pays:
-    image: selimdrici/backend_future_kawa:1.1.2-SNAPSHOT
-    container_name: country-backend
+  backend-bresil:
+    image: selimdrici/backend_future_kawa:1.1.4-SNAPSHOT
+    container_name: bresil-backend
     networks:
-      - country-net
+      - bresil-net
       - global-net # Réseau partagé pour parler à la BDD du siège
     depends_on:
-      - db-pays
+      - db-bresil
       - mqtt-broker
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://country-db:5432/db_bresil
-      SPRING_DATASOURCE_USERNAME: admin_pays
-      SPRING_DATASOURCE_PASSWORD: password_pays
-      MQTT_BROKER_URI: tcp://country-mqtt:1883
+      SPRING_DATASOURCE_URL: jdbc:postgresql://bresil-db:5432/db_bresil
+      SPRING_DATASOURCE_USERNAME: admin_bresil
+      SPRING_DATASOURCE_PASSWORD: password_bresil
+      MQTT_BROKER_URI: tcp://bresil-mqtt:1883
       # Configuration pour que le pays puisse écrire/lire au siège via Docker
       SIEGE_DB_HOST: siege-db
     restart: always
@@ -77,6 +77,7 @@ services:
       - "5434:5432" # Port externe 5434
     volumes:
       - siege_data:/var/lib/postgresql/data
+
     restart: always
 
   adminer-siege:
@@ -92,7 +93,7 @@ services:
 # RÉSEAUX ET VOLUMES
 # ==========================================
 networks:
-  country-net: # Réseau privé du pays (IoT + BDD locale)
+  bresil-net: # Réseau privé du pays (IoT + BDD locale)
   global-net:  # Réseau d'échange entre le Pays et le Siège
 
 volumes:

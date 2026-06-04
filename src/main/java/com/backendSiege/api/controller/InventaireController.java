@@ -1,7 +1,7 @@
 package com.backendSiege.api.controller;
 
 import com.backendSiege.domain.service.InventaireService;
-import com.backendSiege.api.dto.LotResponseDTO;
+import com.backendSiege.api.dto.LotResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +24,6 @@ public class InventaireController {
     @GetMapping("/inventaires/total")
     public ResponseEntity<Integer> getQuantiteTotale() {
         Integer volume = inventaireService.getQuantiteTotale();
-        System.out.println("Volume total de l'inventaire mondial : " + volume);
         if (volume == 0) {
             return ResponseEntity.notFound().build();
         }
@@ -32,8 +31,8 @@ public class InventaireController {
     }
 
     @GetMapping("/lot/{id}")
-    public ResponseEntity<LotResponseDTO> getLotById(@PathVariable UUID id) {
-        LotResponseDTO lot = inventaireService.getLotById(id);
+    public ResponseEntity<LotResponseDto> getLotById(@PathVariable UUID id) {
+        LotResponseDto lot = inventaireService.getLotById(id);
         if (lot == null) {
             return ResponseEntity.notFound().build();
         }
@@ -41,8 +40,8 @@ public class InventaireController {
     }
 
     @GetMapping("/lots")
-    public ResponseEntity<List<LotResponseDTO>> getAllLots() {
-        List<LotResponseDTO> lots = inventaireService.getAllLots();
+    public ResponseEntity<List<LotResponseDto>> getAllLots() {
+        List<LotResponseDto> lots = inventaireService.getAllLots();
         return ResponseEntity.ok(lots);
     }
 }

@@ -1,6 +1,6 @@
 package com.backendSiege.domain.port;
 
-import com.backendSiege.api.dto.LotResponseDTO;
+import com.backendSiege.api.dto.LotResponseDto;
 import java.util.UUID;
 import java.util.List;
 
@@ -8,7 +8,7 @@ public interface InventairePort {
 
     Integer findQuantiteTotale();
     
-    LotResponseDTO findLotById(UUID id);
+    LotResponseDto findLotById(UUID id);
 
-    List<LotResponseDTO> findAllLots();
+    List<LotResponseDto> findAllLots();
 }

@@ -1,7 +1,7 @@
 package com.backendSiege.domain.service;
 
 import com.backendSiege.domain.port.InventairePort;
-import com.backendSiege.api.dto.LotResponseDTO;
+import com.backendSiege.api.dto.LotResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +18,11 @@ public class InventaireService {
         return inventairePort.findQuantiteTotale();
     }
 
-    public LotResponseDTO getLotById(UUID id) {
+    public LotResponseDto getLotById(UUID id) {
         return inventairePort.findLotById(id);
     }
 
-    public List<LotResponseDTO> getAllLots() {
+    public List<LotResponseDto> getAllLots() {
         return inventairePort.findAllLots();
     }
 }

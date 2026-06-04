@@ -1,7 +1,7 @@
 package com.backendSiege.infrastructure.adapters;
 
 import com.backendSiege.domain.port.InventairePort;
-import com.backendSiege.api.dto.LotResponseDTO;
+import com.backendSiege.api.dto.LotResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -10,6 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -17,15 +18,15 @@ public class InventaireAdapter implements InventairePort {
 
     private static final Logger log = LoggerFactory.getLogger(InventaireAdapter.class);
 
-    private final List<WebClient> countryWebClients;
+    private final Map<String, WebClient> countryWebClients;
 
-    public InventaireAdapter(List<WebClient> countryWebClients) {
+    public InventaireAdapter(Map<String, WebClient> countryWebClients) {
         this.countryWebClients = countryWebClients;
     }
 
     @Override
     public Integer findQuantiteTotale() {
-        return Flux.fromIterable(countryWebClients)
+        return Flux.fromIterable(countryWebClients.values())
                 .flatMap(webClient -> webClient.get()
                         .uri("lots/getAllQuantity")
                         .exchangeToMono(response -> {
@@ -55,13 +56,13 @@ public class InventaireAdapter implements InventairePort {
     }
 
     @Override
-    public LotResponseDTO findLotById(UUID id) {
-        return Flux.fromIterable(countryWebClients)
+    public LotResponseDto findLotById(UUID id) {
+        return Flux.fromIterable(countryWebClients.values())
                 .flatMap(webClient -> webClient.get()
                         .uri("lots/getLot/{id}", id)
                         .exchangeToMono(response -> {
                             if (response.statusCode().is2xxSuccessful()) {
-                                return response.bodyToMono(LotResponseDTO.class)
+                                return response.bodyToMono(LotResponseDto.class)
                                         .doOnError(err -> log.error("Erreur de parsing getLot", err));
                             }
                             // Si ce n'est pas trouvé dans ce pays (404 ou autre)
@@ -78,13 +79,13 @@ public class InventaireAdapter implements InventairePort {
     }
 
     @Override
-    public List<LotResponseDTO> findAllLots() {
-        return Flux.fromIterable(countryWebClients)
+    public List<LotResponseDto> findAllLots() {
+        return Flux.fromIterable(countryWebClients.values())
                 .flatMap(webClient -> webClient.get()
                         .uri("lots/allLotsFromAllEntrepots")
                         .exchangeToFlux(response -> {
                             if (response.statusCode().is2xxSuccessful()) {
-                                return response.bodyToFlux(LotResponseDTO.class)
+                                return response.bodyToFlux(LotResponseDto.class)
                                         .doOnError(err -> log.error("Erreur de parsing allLotsFromAllEntrepots", err));
                             }
                             return Flux.empty();

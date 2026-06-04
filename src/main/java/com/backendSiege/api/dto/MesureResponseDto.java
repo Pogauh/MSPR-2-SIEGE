@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "dateMesure",
     "idCapteur"
 })
-public class MesureResponseDTO {
+public class MesureResponseDto {
     private UUID idMesure;
     private Double temperature;
     private Double humidite;

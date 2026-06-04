@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "idEntrepot",
     "historique"
 })
-public class LotResponseDTO {
+public class LotResponseDto {
     public UUID idLot;
     public String status;
     public Integer quantite;
