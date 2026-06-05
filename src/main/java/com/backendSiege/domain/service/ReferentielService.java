@@ -1,5 +1,6 @@
 package com.backendSiege.domain.service;
 
+import com.backendSiege.domain.model.Entrepot;
 import com.backendSiege.domain.model.Exploitation;
 import com.backendSiege.domain.port.ReferentielPort;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,10 @@ public class ReferentielService {
 
     public List<Exploitation> getAllExploitationsByPays(String pays) {
         return referentielPort.findAllExploitationsByPays(pays);
+    }
+
+    public List<Entrepot> getAllEntrepotsByPays(String pays) {
+        return referentielPort.findAllEntrepotsByPays(pays);
     }
 
 }

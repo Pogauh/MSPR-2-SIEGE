@@ -1,6 +1,7 @@
 package com.backendSiege.infrastructure.adapters;
 
 import com.backendSiege.api.dto.MesureResponseDto;
+import com.backendSiege.domain.model.Entrepot;
 import com.backendSiege.domain.model.Exploitation;
 import com.backendSiege.domain.port.ReferentielPort;
 import org.slf4j.Logger;
@@ -44,4 +45,26 @@ public class ReferentielAdapter implements ReferentielPort {
                 })
                 .block();
     }
+
+    @Override
+    public List<Entrepot> findAllEntrepotsByPays(String pays) {
+        WebClient client = countryWebClients.get(pays.toUpperCase());
+
+        if (client == null) {
+            log.error("Tentative d'appel sur un pays non configuré : {}", pays);
+            return null;
+        }
+        return client.get()
+                .uri("/entrepots")
+                .retrieve()
+                .bodyToFlux(Entrepot.class)
+                .collectList()
+                .doOnError(e -> log.error("Erreur lors de l'appel pour le pays {}", pays))
+                .onErrorResume(ex -> {
+                    log.error("Erreur technique lors de l'appel pays {}", pays, ex);
+                    return Mono.empty();
+                })
+                .block();
+    }
+
 }

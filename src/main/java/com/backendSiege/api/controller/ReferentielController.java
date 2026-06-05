@@ -1,5 +1,6 @@
 package com.backendSiege.api.controller;
 
+import com.backendSiege.domain.model.Entrepot;
 import com.backendSiege.domain.model.Exploitation;
 import com.backendSiege.domain.service.ReferentielService;
 import com.backendSiege.infrastructure.configuration.WebClientConfig;
@@ -32,4 +33,12 @@ public class ReferentielController {
         List<Exploitation> result = referentielService.getAllExploitationsByPays(pays);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/allEntrepotByPays/{pays}")
+    public ResponseEntity<List<Entrepot>> getAllEntrepotByPays(@PathVariable String pays) {
+        List<Entrepot> result = referentielService.getAllEntrepotsByPays(pays);
+        return ResponseEntity.ok(result);
+    }
+
+
 }
