@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
 public class MesureController {
 
     private final MesureService mesureService;
@@ -22,19 +21,19 @@ public class MesureController {
         this.capteurMapper = capteurMapper;
     }
 
-    @GetMapping("/mesures/{mesureId}")
+    @GetMapping("api/mesures/{mesureId}")
     public ResponseEntity<MesureResponseDto> getMesureById(@RequestParam String pays, @PathVariable UUID mesureId) {
         MesureResponseDto mesures = mesureService.getMesureById(pays, mesureId);
         return ResponseEntity.ok(mesures);
     }
 
-    @GetMapping("/capteurs/{idCapteur}/mesures")
+    @GetMapping("api/capteurs/{idCapteur}/mesures")
     public ResponseEntity<List<MesureResponseDto>> getMesuresByCapteurId(@RequestParam String pays, @PathVariable UUID idCapteur) {
         List<MesureResponseDto> mesures = mesureService.getMesuresByCapteurId(pays, idCapteur);
         return ResponseEntity.ok(mesures);
     }
 
-    @GetMapping("/entrepot/{idEntrepot}/capteurSummary")
+    @GetMapping("/warehouses/{idEntrepot}/readings/summary")
     public ResponseEntity<List<CapteurSummaryResponseDto>> getCapteurSummaryByEntrepotId(@RequestParam String pays, @PathVariable UUID idEntrepot) {
         try {
             return ResponseEntity.ok(

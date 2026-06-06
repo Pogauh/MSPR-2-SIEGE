@@ -1,7 +1,5 @@
 package com.backendSiege.infrastructure.adapters;
 
-import com.backendSiege.api.dto.LotResponseDto;
-import com.backendSiege.api.dto.MesureResponseDto;
 import com.backendSiege.domain.model.Historique;
 import com.backendSiege.domain.port.HistoriquePort;
 import org.slf4j.Logger;

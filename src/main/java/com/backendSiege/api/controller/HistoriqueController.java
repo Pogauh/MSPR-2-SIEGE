@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
 public class HistoriqueController {
 
     private final HistoriqueService historiqueService;
@@ -23,7 +22,7 @@ public class HistoriqueController {
         this.historiqueMapper = historiqueMapper;
     }
 
-    @GetMapping("/historique/{idLot}")
+    @GetMapping("/history/{idLot}")
     public ResponseEntity<List<HistoriqueResponseDto>> getAllHistoriqueForLot(@PathVariable UUID idLot, @RequestParam(value = "type", required = false) String type) {
         TypeHistoriqueEnum enumType = null;
 
