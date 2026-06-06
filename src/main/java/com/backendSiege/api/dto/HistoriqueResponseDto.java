@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "zoneActuelle",
     "detail"
 })
-public class HistoriqueDto {
+public class HistoriqueResponseDto {
     private UUID idHistorique;
     private String type;
     private LocalDateTime dateEmission;

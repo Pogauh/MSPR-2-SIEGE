@@ -32,5 +32,5 @@ public class LotResponseDto {
     public String emplacement;
     public UUID idExploitation;
     public UUID idEntrepot;
-    public List<HistoriqueDto> historique;
+    public List<HistoriqueResponseDto> historique;
 }

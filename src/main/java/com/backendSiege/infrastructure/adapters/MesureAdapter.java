@@ -34,7 +34,7 @@ public class MesureAdapter implements MesurePort {
         }
 
         return client.get()
-                .uri("/mesures/getMesure/{id}", id)
+                .uri("/mesures/getMesure/{idLot}", id)
                 .retrieve()
                 .bodyToMono(MesureResponseDto.class)
                 .doOnError(e -> log.error("Erreur lors de l'appel pour le pays {}", nomPays))
@@ -51,7 +51,7 @@ public class MesureAdapter implements MesurePort {
         if (client == null) return List.of();
 
         return client.get()
-                .uri("/capteurs/{id}/mesures", idCapteur)
+                .uri("/capteurs/{idLot}/mesures", idCapteur)
                 .retrieve()
                 .bodyToFlux(MesureResponseDto.class)
                 .onErrorResume(e -> Flux.empty())

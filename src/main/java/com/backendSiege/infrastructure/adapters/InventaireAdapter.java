@@ -59,7 +59,7 @@ public class InventaireAdapter implements InventairePort {
     public LotResponseDto findLotById(UUID id) {
         return Flux.fromIterable(countryWebClients.values())
                 .flatMap(webClient -> webClient.get()
-                        .uri("lots/getLot/{id}", id)
+                        .uri("lots/getLot/{idLot}", id)
                         .exchangeToMono(response -> {
                             if (response.statusCode().is2xxSuccessful()) {
                                 return response.bodyToMono(LotResponseDto.class)

@@ -17,9 +17,9 @@ public class MesureController {
     private final MesureService mesureService;
     private final CapteurMapper capteurMapper;
 
-    public MesureController(MesureService mesureService) {
+    public MesureController(MesureService mesureService, CapteurMapper capteurMapper) {
         this.mesureService = mesureService;
-        this.capteurMapper = new CapteurMapper();
+        this.capteurMapper = capteurMapper;
     }
 
     @GetMapping("/mesures/{mesureId}")

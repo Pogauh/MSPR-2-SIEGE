@@ -44,4 +44,6 @@ public class InventaireController {
         List<LotResponseDto> lots = inventaireService.getAllLots();
         return ResponseEntity.ok(lots);
     }
+
+
 }

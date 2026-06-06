@@ -2,19 +2,11 @@ package com.backendSiege.infrastructure.mapper;
 
 import com.backendSiege.api.dto.CapteurSummaryResponseDto;
 import com.backendSiege.domain.model.CapteurSummary;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 
-@Component
-public class CapteurMapper {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface CapteurMapper {
 
-    public CapteurSummaryResponseDto toResponse(CapteurSummary capteurSummary) {
-        CapteurSummaryResponseDto dto = new CapteurSummaryResponseDto();
-        dto.setZoneId(capteurSummary.getZoneId());
-        dto.setZoneName(capteurSummary.getZoneName());
-        dto.setAvgTemp24h(capteurSummary.getAvgTemp24h());
-        dto.setAvgHumidity24h(capteurSummary.getAvgHumidity24h());
-        dto.setLastHumidity(capteurSummary.getLastHumidity());
-        dto.setLastTemp(capteurSummary.getLastTemp());
-        return dto;
-    }
+    CapteurSummaryResponseDto toResponse(CapteurSummary capteurSummary);
 }
