@@ -15,7 +15,7 @@ services:
       - ./mosquitto/config:/mosquitto/config
     restart: always
 
-  db-bresil:
+  db_bresil:
     image: postgres:15-alpine
     container_name: bresil-db
     networks:
@@ -48,7 +48,7 @@ services:
       - bresil-net
       - global-net # Réseau partagé pour parler à la BDD du siège
     depends_on:
-      - db-bresil
+      - db_bresil
       - mqtt-broker
     ports:
       - "8080:8080"

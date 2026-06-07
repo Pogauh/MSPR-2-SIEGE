@@ -7,7 +7,6 @@ import com.backendSiege.infrastructure.mapper.CapteurMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -43,6 +42,7 @@ public class MesureController {
         }
     }
 
+    // DATE Attendu ex : 2024-06-05T18:46
     @GetMapping("readings/{idZone}/")
     public ResponseEntity<List<MesureResponseDto>> getMesuresByZoneId(@RequestParam String pays,
                                                                       @PathVariable UUID idZone,
