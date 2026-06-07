@@ -24,6 +24,10 @@ public class MesureService {
         return mesurePort.findMesuresByZoneId(pays, idZone, startDate, endDate);
     }
 
+    public MesureResponseDto getLastMesuresByZoneId(String pays, UUID idZone) {
+        return mesurePort.findLastMesuresByZoneId(pays, idZone);
+    }
+
     public List<CapteurSummary> getCapteurSummaryByEntrepotId(String pays,UUID idCapteur) {
         return mesurePort.findCapteurSummaryByEntrepotId(pays, idCapteur);
     }

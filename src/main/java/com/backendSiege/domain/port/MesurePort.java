@@ -10,5 +10,7 @@ import java.util.UUID;
 public interface MesurePort {
     MesureResponseDto findMesureById(String pays, UUID id);
     List<MesureResponseDto> findMesuresByZoneId(String pays, UUID idZone, LocalDateTime startDate, LocalDateTime endDate);
+
+    MesureResponseDto findLastMesuresByZoneId(String pays, UUID idZone);
     List<CapteurSummary> findCapteurSummaryByEntrepotId(String pays, UUID idEntrepot);
 }

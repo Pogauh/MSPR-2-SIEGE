@@ -65,6 +65,20 @@ public class MesureAdapter implements MesurePort {
     }
 
     @Override
+    public MesureResponseDto findLastMesuresByZoneId(String pays, UUID idZone) {
+        WebClient client = countryWebClients.get(pays.toUpperCase());
+
+        if (client == null) return null;
+
+        return client.get()
+                .uri("/zone/{idZone}/readings/latest", idZone)
+                .retrieve()
+                .bodyToMono(MesureResponseDto.class)
+                .onErrorResume(e -> Mono.empty())
+                .block();
+    }
+
+    @Override
     public List<CapteurSummary> findCapteurSummaryByEntrepotId(String pays, UUID idEntrepot) {
         WebClient client = countryWebClients.get(pays.toUpperCase());
 

@@ -51,4 +51,11 @@ public class MesureController {
         List<MesureResponseDto> mesures = mesureService.getMesuresByZoneId(pays, idZone, startDate, endDate);
         return ResponseEntity.ok(mesures);
     }
+
+    @GetMapping("zones/{idZone}/readings/latest")
+    public ResponseEntity<MesureResponseDto> getMesuresByZoneId(@RequestParam String pays,
+                                                                @PathVariable UUID idZone) {
+        return ResponseEntity.ok(mesureService.getLastMesuresByZoneId(pays, idZone));
+    }
+
 }
