@@ -7,6 +7,8 @@ import com.backendSiege.infrastructure.mapper.CapteurMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,12 +29,6 @@ public class MesureController {
         return ResponseEntity.ok(mesures);
     }
 
-    @GetMapping("api/capteurs/{idCapteur}/mesures")
-    public ResponseEntity<List<MesureResponseDto>> getMesuresByCapteurId(@RequestParam String pays, @PathVariable UUID idCapteur) {
-        List<MesureResponseDto> mesures = mesureService.getMesuresByCapteurId(pays, idCapteur);
-        return ResponseEntity.ok(mesures);
-    }
-
     @GetMapping("/warehouses/{idEntrepot}/readings/summary")
     public ResponseEntity<List<CapteurSummaryResponseDto>> getCapteurSummaryByEntrepotId(@RequestParam String pays, @PathVariable UUID idEntrepot) {
         try {
@@ -45,5 +41,14 @@ public class MesureController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("readings/{idZone}/")
+    public ResponseEntity<List<MesureResponseDto>> getMesuresByZoneId(@RequestParam String pays,
+                                                                      @PathVariable UUID idZone,
+                                                                      @RequestParam("startDate") LocalDateTime startDate,
+                                                                      @RequestParam("endDate") LocalDateTime endDate) {
+        List<MesureResponseDto> mesures = mesureService.getMesuresByZoneId(pays, idZone, startDate, endDate);
+        return ResponseEntity.ok(mesures);
     }
 }

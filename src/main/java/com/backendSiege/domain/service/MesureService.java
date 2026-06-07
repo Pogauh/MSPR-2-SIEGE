@@ -6,6 +6,7 @@ import com.backendSiege.domain.model.CapteurSummary;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.List;
 
@@ -19,8 +20,8 @@ public class MesureService {
         return mesurePort.findMesureById(pays, id);
     }
 
-    public List<MesureResponseDto> getMesuresByCapteurId(String pays,UUID idCapteur) {
-        return mesurePort.findMesuresByCapteurId(pays, idCapteur);
+    public List<MesureResponseDto> getMesuresByZoneId(String pays, UUID idZone, LocalDateTime startDate, LocalDateTime endDate) {
+        return mesurePort.findMesuresByZoneId(pays, idZone, startDate, endDate);
     }
 
     public List<CapteurSummary> getCapteurSummaryByEntrepotId(String pays,UUID idCapteur) {

@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -45,13 +46,17 @@ public class MesureAdapter implements MesurePort {
                 .block();
     }
 
-    public List<MesureResponseDto> findMesuresByCapteurId(String pays, UUID idCapteur) {
+    public List<MesureResponseDto> findMesuresByZoneId(String pays, UUID idZone, LocalDateTime startDate, LocalDateTime endDate) {
         WebClient client = countryWebClients.get(pays.toUpperCase());
 
         if (client == null) return List.of();
 
         return client.get()
-                .uri("/capteurs/{idLot}/mesures", idCapteur)
+                .uri(uriBuilder -> uriBuilder
+                        .path("/zone/readings/{idZone}")
+                        .queryParam("startDate", startDate != null ? startDate.toString() : null)
+                        .queryParam("endDate", endDate != null ? endDate.toString() : null)
+                        .build(idZone))
                 .retrieve()
                 .bodyToFlux(MesureResponseDto.class)
                 .onErrorResume(e -> Flux.empty())

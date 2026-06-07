@@ -42,7 +42,7 @@ services:
     restart: always
 
   backend-bresil:
-    image: selimdrici/backend_future_kawa:1.1.8-SNAPSHOT
+    image: selimdrici/backend_future_kawa:1.1.10-SNAPSHOT
     container_name: bresil-backend
     networks:
       - bresil-net
