@@ -1,5 +1,7 @@
 package com.backendSiege.infrastructure.adapters;
 
+import com.backendSiege.api.dto.MesureLotResponseDto;
+import com.backendSiege.api.dto.MesureResponseDto;
 import com.backendSiege.domain.port.InventairePort;
 import com.backendSiege.api.dto.LotResponseDto;
 import org.slf4j.Logger;
@@ -92,6 +94,28 @@ public class InventaireAdapter implements InventairePort {
                         })
                         .onErrorResume(ex -> {
                             log.error("Appel allLotsFromAllEntrepots KO pour cet adapter", ex);
+                            return Flux.empty();
+                        })
+                )
+                .collectList()
+                .blockOptional()
+                .orElse(List.of());
+    }
+
+    @Override
+    public List<MesureLotResponseDto> findAllMesuresByLotId(UUID id) {
+        return Flux.fromIterable(countryWebClients.values())
+                .flatMap(webClient -> webClient.get()
+                        .uri("lots/getAllMesuresByLotId/{idLot}", id)
+                        .exchangeToFlux(response -> {
+                            if (response.statusCode().is2xxSuccessful()) {
+                                return response.bodyToFlux(MesureLotResponseDto.class)
+                                        .doOnError(err -> log.error("Erreur de parsing getAllMesuresByLotId", err));
+                            }
+                            return Flux.empty();
+                        })
+                        .onErrorResume(ex -> {
+                            log.error("Appel getMesuresByLotId KO pour  l'adapter findAllMesuresByLotId", ex);
                             return Flux.empty();
                         })
                 )

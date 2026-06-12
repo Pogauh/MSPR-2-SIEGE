@@ -1,5 +1,6 @@
 package com.backendSiege.domain.service;
 
+import com.backendSiege.api.dto.MesureLotResponseDto;
 import com.backendSiege.domain.port.InventairePort;
 import com.backendSiege.api.dto.LotResponseDto;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,9 @@ public class InventaireService {
 
     public List<LotResponseDto> getAllLots() {
         return inventairePort.findAllLots();
+    }
+
+    public List<MesureLotResponseDto> getAllMesuresByLotId(UUID id) {
+        return inventairePort.findAllMesuresByLotId(id);
     }
 }

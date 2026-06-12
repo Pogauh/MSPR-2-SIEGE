@@ -1,5 +1,6 @@
 package com.backendSiege.api.controller;
 
+import com.backendSiege.api.dto.MesureLotResponseDto;
 import com.backendSiege.domain.service.InventaireService;
 import com.backendSiege.api.dto.LotResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -41,5 +42,12 @@ public class InventaireController {
     public ResponseEntity<List<LotResponseDto>> getAllLots() {
         List<LotResponseDto> lots = inventaireService.getAllLots();
         return ResponseEntity.ok(lots);
+    }
+
+    @GetMapping("/lot/{idLot}/mesures")
+    public ResponseEntity<List<MesureLotResponseDto>> getAllLots(@PathVariable UUID idLot) {
+        List<MesureLotResponseDto> lots = inventaireService.getAllMesuresByLotId(idLot);
+        return ResponseEntity.ok(lots);
+
     }
 }
