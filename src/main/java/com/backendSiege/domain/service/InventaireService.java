@@ -30,4 +30,8 @@ public class InventaireService {
     public List<MesureLotResponseDto> getAllMesuresByLotId(UUID id) {
         return inventairePort.findAllMesuresByLotId(id);
     }
+
+    public LotResponseDto getOldestLotById(String pays) {
+        return inventairePort.findOldestLotById(pays);
+    }
 }

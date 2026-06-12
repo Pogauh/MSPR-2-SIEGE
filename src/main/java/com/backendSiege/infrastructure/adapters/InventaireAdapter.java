@@ -81,6 +81,45 @@ public class InventaireAdapter implements InventairePort {
     }
 
     @Override
+    public LotResponseDto findOldestLotById(String pays) {
+        if (pays != null && !pays.trim().isEmpty()) {
+            WebClient targetClient = countryWebClients.get(pays.trim().toUpperCase());
+            if (targetClient == null) {
+                log.warn("Aucun WebClient configuré pour le pays fourni : {}", pays);
+                return null;
+            }
+            return executeGetOldestLot(targetClient).block();
+        }
+
+        return Flux.fromIterable(countryWebClients.values())
+                .flatMap(this::executeGetOldestLot)
+                // Le reduce compare les lots reçus deux à deux pour ne garder que le plus ancien
+                .reduce((lot1, lot2) -> {
+                    if (lot1.getDateStockage() == null) return lot2;
+                    if (lot2.getDateStockage() == null) return lot1;
+                    return lot1.getDateStockage().isBefore(lot2.getDateStockage()) ? lot1 : lot2;
+                })
+                .blockOptional()
+                .orElse(null);
+    }
+
+    private Mono<LotResponseDto> executeGetOldestLot(WebClient webClient) {
+        return webClient.get()
+                .uri("lots/oldestLot")
+                .exchangeToMono(response -> {
+                    if (response.statusCode().is2xxSuccessful()) {
+                        return response.bodyToMono(LotResponseDto.class)
+                                .doOnError(err -> log.error("Erreur de parsing getOldestLot", err));
+                    }
+                    return Mono.empty();
+                })
+                .onErrorResume(ex -> {
+                    log.error("Appel getLot KO pour cet adapter", ex);
+                    return Mono.empty();
+                });
+    }
+
+    @Override
     public List<LotResponseDto> findAllLots() {
         return Flux.fromIterable(countryWebClients.values())
                 .flatMap(webClient -> webClient.get()

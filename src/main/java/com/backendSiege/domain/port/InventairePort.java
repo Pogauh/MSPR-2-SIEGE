@@ -16,4 +16,5 @@ public interface InventairePort {
 
     List<MesureLotResponseDto> findAllMesuresByLotId(UUID id);
 
+    LotResponseDto findOldestLotById(String pays);
 }
