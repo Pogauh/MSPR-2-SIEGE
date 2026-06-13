@@ -2,6 +2,7 @@ package com.backendSiege.api.controller;
 
 import com.backendSiege.api.dto.ReportingGlobalDto;
 import com.backendSiege.api.dto.ReportingQualityDto;
+import com.backendSiege.api.dto.ReportingStockDto;
 import com.backendSiege.domain.service.ReportingService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,9 +29,9 @@ public class ReportingController {
         return reportingService.getReportingQuality(pays ,startDate, endDate);
     }
 
-//    @GetMapping("/reporting/stock")
-//    public ReportingQualityDto getStockReport(@RequestParam String pays, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
-//        return reportingService.getReportingQuality(pays,startDate, endDate);
-//    }
+    @GetMapping("/reporting/stock")
+    public ReportingStockDto getStockReport(@RequestParam String pays, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
+        return reportingService.getReportingStock(pays,startDate, endDate);
+    }
 
 }

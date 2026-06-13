@@ -2,6 +2,7 @@ package com.backendSiege.infrastructure.adapters;
 
 import com.backendSiege.api.dto.ReportingGlobalDto;
 import com.backendSiege.api.dto.ReportingQualityDto;
+import com.backendSiege.api.dto.ReportingStockDto;
 import com.backendSiege.domain.port.ReportingPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -126,9 +125,29 @@ public class ReportingAdapter implements ReportingPort {
                 .block();
     }
 
-    /**
-     * Méthode utilitaire pour centraliser l'appel HTTP réactif (évite la duplication de code)
-     */
+
+    public ReportingStockDto findReportingStock(String pays, LocalDateTime startDate, LocalDateTime endDate) {
+
+        // 1. Validation de la présence du pays
+        if (pays == null || pays.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le paramètre 'pays' est obligatoire.");
+        }
+
+        // 2. Récupération du client correspondant
+        WebClient targetClient = countryWebClients.get(pays.trim().toUpperCase());
+
+        if (targetClient == null) {
+            log.warn("Aucun WebClient configuré pour le pays : {}", pays);
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Le pays '" + pays + "' n'est pas supporté ou configuré."
+            );
+        }
+
+        // 3. Appel direct et retour du résultat
+        return executeStockReporting(targetClient, startDate, endDate).block();
+    }
+
     private Mono<ReportingQualityDto> executeQualityReporting(WebClient webClient, LocalDateTime startDate, LocalDateTime endDate) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -154,6 +173,34 @@ public class ReportingAdapter implements ReportingPort {
                 .onErrorResume(ex -> {
                     log.error("Appel pays KO, fallback objet vide", ex);
                     return Mono.just(new ReportingQualityDto());
+                });
+    }
+
+    private Mono<ReportingStockDto> executeStockReporting(WebClient webClient, LocalDateTime startDate, LocalDateTime endDate) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("reporting/stock")
+                        .queryParam("startDate", startDate)
+                        .queryParam("endDate", endDate)
+                        .build())
+                .exchangeToMono(response -> {
+                    log.debug("findReportingStock status={}", response.statusCode());
+
+                    if (response.statusCode().is2xxSuccessful()) {
+                        return response.bodyToMono(ReportingStockDto.class)
+                                .doOnError(err -> log.error("Erreur de parsing findReportingStock", err));
+                    }
+
+                    if (response.statusCode().value() == 404) {
+                        log.warn("Reporting non trouvé (404), fallback objet vide");
+                        return Mono.just(new ReportingStockDto());
+                    }
+
+                    return response.createException().flatMap(Mono::error);
+                })
+                .onErrorResume(ex -> {
+                    log.error("Appel pays KO, fallback objet vide", ex);
+                    return Mono.just(new ReportingStockDto());
                 });
     }
 }

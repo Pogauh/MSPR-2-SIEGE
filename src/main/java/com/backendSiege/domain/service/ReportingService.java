@@ -2,6 +2,7 @@ package com.backendSiege.domain.service;
 
 import com.backendSiege.api.dto.ReportingGlobalDto;
 import com.backendSiege.api.dto.ReportingQualityDto;
+import com.backendSiege.api.dto.ReportingStockDto;
 import com.backendSiege.domain.port.ReportingPort;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,9 @@ public class ReportingService {
 
     public ReportingQualityDto getReportingQuality(String pays, LocalDateTime startDate, LocalDateTime endDate) {
         return reportingPort.findReportingQuality(pays, startDate, endDate);
+    }
+
+    public ReportingStockDto getReportingStock(String pays, LocalDateTime startDate, LocalDateTime endDate) {
+        return reportingPort.findReportingStock(pays, startDate, endDate);
     }
 }
