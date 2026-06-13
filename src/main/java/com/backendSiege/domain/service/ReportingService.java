@@ -20,7 +20,7 @@ public class ReportingService {
         return reportingPort.findReportingGlobal();
     }
 
-    public ReportingQualityDto getReportingQuality(LocalDateTime startDate, LocalDateTime endDate) {
-        return reportingPort.findReportingQuality(startDate, endDate);
+    public ReportingQualityDto getReportingQuality(String pays, LocalDateTime startDate, LocalDateTime endDate) {
+        return reportingPort.findReportingQuality(pays, startDate, endDate);
     }
 }

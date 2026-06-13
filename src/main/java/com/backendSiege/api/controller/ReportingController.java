@@ -24,8 +24,13 @@ public class ReportingController {
     }
 
     @GetMapping("/reporting/quality")
-    public ReportingQualityDto getQualityReport(@RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
-        return reportingService.getReportingQuality(startDate, endDate);
+    public ReportingQualityDto getQualityReport(@RequestParam(value = "pays", required = false) String pays, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
+        return reportingService.getReportingQuality(pays ,startDate, endDate);
     }
+
+//    @GetMapping("/reporting/stock")
+//    public ReportingQualityDto getStockReport(@RequestParam String pays, @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
+//        return reportingService.getReportingQuality(pays,startDate, endDate);
+//    }
 
 }

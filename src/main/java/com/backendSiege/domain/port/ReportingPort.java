@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 public interface ReportingPort {
 
     ReportingGlobalDto findReportingGlobal();
-    ReportingQualityDto findReportingQuality(LocalDateTime startDate, LocalDateTime endDate);
+    ReportingQualityDto findReportingQuality(String pays, LocalDateTime startDate, LocalDateTime endDate);
 }

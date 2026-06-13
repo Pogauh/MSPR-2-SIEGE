@@ -5,12 +5,16 @@ import com.backendSiege.api.dto.ReportingQualityDto;
 import com.backendSiege.domain.port.ReportingPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -81,38 +85,27 @@ public class ReportingAdapter implements ReportingPort {
                 .block();
     }
 
-    @Override
-    public ReportingQualityDto findReportingQuality(LocalDateTime startDate, LocalDateTime endDate) {
+    public ReportingQualityDto findReportingQuality(String pays, LocalDateTime startDate, LocalDateTime endDate) {
+
+        // 1. Traitement si un pays spécifique est fourni
+        if (pays != null && !pays.trim().isEmpty()) {
+            WebClient targetClient = countryWebClients.get(pays.trim().toUpperCase());
+            if (targetClient == null) {
+                log.warn("Aucun WebClient configuré pour le pays fourni : {}", pays);
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Le pays fourni '" + pays + "' n'est pas supporté ou configuré."
+                );
+            }
+            // On exécute l'appel uniquement sur le client du pays cible
+            return executeQualityReporting(targetClient, startDate, endDate).block();
+        }
+
+        // 2. Traitement global si aucun pays n'est fourni (on boucle sur tous les pays)
         return Flux.fromIterable(countryWebClients.values())
-                .flatMap(webClient -> webClient.get()
-                        .uri(uriBuilder -> uriBuilder
-                                .path("reporting/quality")
-                                .queryParam("startDate", startDate)
-                                .queryParam("endDate", endDate)
-                                .build())
-                        .exchangeToMono(response -> {
-                            log.debug("findReportingQuality status={}", response.statusCode());
-
-                            if (response.statusCode().is2xxSuccessful()) {
-                                return response.bodyToMono(ReportingQualityDto.class)
-                                        .doOnError(err -> log.error("Erreur de parsing findReportingQuality", err));
-                            }
-
-                            if (response.statusCode().value() == 404) {
-                                log.warn("Reporting non trouvé (404), fallback objet vide");
-                                return Mono.just(new ReportingQualityDto());
-                            }
-
-                            // Gestion des autres erreurs HTTP (5xx, 403, etc.)
-                            return response.createException().flatMap(Mono::error);
-                        })
-                        .onErrorResume(ex -> {
-                            log.error("Appel pays KO, fallback objet vide", ex);
-                            return Mono.just(new ReportingQualityDto());
-                        })
-                )
+                .flatMap(webClient -> executeQualityReporting(webClient, startDate, endDate))
                 .reduce(new ReportingQualityDto(), (accumulateur, dtoPays) -> {
-                    // 1. Accumulation des compteurs simples
+                    // Accumulation des compteurs simples
                     accumulateur.setAlertCount(
                             accumulateur.getAlertCount() + dtoPays.getAlertCount()
                     );
@@ -120,19 +113,47 @@ public class ReportingAdapter implements ReportingPort {
                             accumulateur.getNonComplianceCount() + dtoPays.getNonComplianceCount()
                     );
 
-                    // 2. Moyenne du taux de conformité par rapport aux pays qui répondent
+                    // Moyenne du taux de conformité
                     if (dtoPays.getComplianceRate() > 0) {
-                        // Si c'est le premier pays qui a de la donnée, on initialise le taux
                         if (accumulateur.getComplianceRate() == 0) {
                             accumulateur.setComplianceRate(dtoPays.getComplianceRate());
                         } else {
-                            // Sinon, on fait la moyenne glissante entre l'existant cumulé et le nouveau pays
                             accumulateur.setComplianceRate((accumulateur.getComplianceRate() + dtoPays.getComplianceRate()) / 2.0);
                         }
                     }
-
                     return accumulateur;
                 })
                 .block();
+    }
+
+    /**
+     * Méthode utilitaire pour centraliser l'appel HTTP réactif (évite la duplication de code)
+     */
+    private Mono<ReportingQualityDto> executeQualityReporting(WebClient webClient, LocalDateTime startDate, LocalDateTime endDate) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("reporting/quality")
+                        .queryParam("startDate", startDate)
+                        .queryParam("endDate", endDate)
+                        .build())
+                .exchangeToMono(response -> {
+                    log.debug("findReportingQuality status={}", response.statusCode());
+
+                    if (response.statusCode().is2xxSuccessful()) {
+                        return response.bodyToMono(ReportingQualityDto.class)
+                                .doOnError(err -> log.error("Erreur de parsing findReportingQuality", err));
+                    }
+
+                    if (response.statusCode().value() == 404) {
+                        log.warn("Reporting non trouvé (404), fallback objet vide");
+                        return Mono.just(new ReportingQualityDto());
+                    }
+
+                    return response.createException().flatMap(Mono::error);
+                })
+                .onErrorResume(ex -> {
+                    log.error("Appel pays KO, fallback objet vide", ex);
+                    return Mono.just(new ReportingQualityDto());
+                });
     }
 }
