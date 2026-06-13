@@ -1,8 +1,11 @@
 package com.backendSiege.domain.service;
 
 import com.backendSiege.api.dto.ReportingGlobalDto;
+import com.backendSiege.api.dto.ReportingQualityDto;
 import com.backendSiege.domain.port.ReportingPort;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class ReportingService {
@@ -15,5 +18,9 @@ public class ReportingService {
 
     public ReportingGlobalDto getReportingGlobal() {
         return reportingPort.findReportingGlobal();
+    }
+
+    public ReportingQualityDto getReportingQuality(LocalDateTime startDate, LocalDateTime endDate) {
+        return reportingPort.findReportingQuality(startDate, endDate);
     }
 }
