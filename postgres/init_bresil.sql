@@ -51,7 +51,7 @@ CREATE TABLE alerte (
                         type_alerte VARCHAR(50),
                         description VARCHAR(255),
                         date_emission TIMESTAMP,
-                        id_capteur UUID NOT NULL REFERENCES capteur(id_capteur)
+                        id_capteur UUID REFERENCES capteur(id_capteur)
 );
 
 CREATE TABLE historique (
@@ -112,3 +112,32 @@ FROM capteur_seed
 INSERT INTO exploitation (id_exploitation, nom, adresse)
 VALUES ('aa0e8400-e29b-41d4-a716-446655440022', 'Exploitation Flamenco', '804 rue du Barista')
     ON CONFLICT (id_exploitation) DO NOTHING;
+
+
+WITH lot_multiplier AS (
+    -- Génère deux lignes pour multiplier chaque zone par 2
+    VALUES (1), (2)
+)
+INSERT INTO lot (
+    id_lot,
+    status,
+    quantite,
+    caracteristique,
+    date_sortie,
+    date_stockage,
+    date_production,
+    id_exploitation,
+    id_zone
+)
+SELECT
+    uuid_generate_v4(),
+    'COMPLIANT',
+    (floor(random() * 5)::int + 1) * 100,
+    floor(random() * 5 + 1)::int,
+        NULL,
+    CURRENT_TIMESTAMP - (random() * interval '10 months'),
+    CURRENT_DATE - floor(random() * 330 + 1)::int,
+        (SELECT id_exploitation FROM exploitation LIMIT 1),
+    z.id_zone
+FROM zone z
+    CROSS JOIN lot_multiplier;
