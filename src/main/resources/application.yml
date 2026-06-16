@@ -25,5 +25,19 @@ app:
           tolerance-temperature: ${TOLERANCE_TEMPERATURE:3}
           tolerance-humidite: ${TOLERANCE_HUMIDITE:2}
 
-#      "COLOMBIE": "http://localhost:8085/api/"
-#      "EQUATEUR": "http://localhost:8088/api/"
+      "COLOMBIE":
+        url: ${URL_COLOMBIE:http://localhost:8079/api/}
+        tolerences:
+          temperature-ideale: ${TEMPERATURE_IDEALE:26}
+          humidite-ideale: ${HUMIDITE_IDEALE:80}
+          tolerance-temperature: ${TOLERANCE_TEMPERATURE:3}
+          tolerance-humidite: ${TOLERANCE_HUMIDITE:2}
+
+
+      "EQUATEUR":
+          url: ${URL_EQUATEUR:http://localhost:8078/api/}
+          tolerences:
+            temperature-ideale: ${TEMPERATURE_IDEALE:31}
+            humidite-ideale: ${HUMIDITE_IDEALE:60}
+            tolerance-temperature: ${TOLERANCE_TEMPERATURE:3}
+            tolerance-humidite: ${TOLERANCE_HUMIDITE:2}

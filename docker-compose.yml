@@ -27,7 +27,7 @@ services:
     ports:
       - "5433:5432" # Port externe 5433 pour ne pas avoir de conflit avec le siège
     volumes:
-      - pays_data:/var/lib/postgresql/data
+      - bresil_data:/var/lib/postgresql/data
       - ./postgres/init_bresil.sql:/docker-entrypoint-initdb.d/init_bresil.sql
 
     restart: always
@@ -42,7 +42,7 @@ services:
     restart: always
 
   backend-bresil:
-    image: selimdrici/backend_future_kawa:1.1.26-SNAPSHOT
+    image: selimdrici/backend_future_kawa:1.1.28-SNAPSHOT
     container_name: bresil-backend
     networks:
       - bresil-net
@@ -53,16 +53,171 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://bresil-db:5432/db_bresil
-      SPRING_DATASOURCE_USERNAME: admin_bresil
-      SPRING_DATASOURCE_PASSWORD: password_bresil
+      # --- Connexion Base de Données ---
+      DB_HOST: bresil-db
+      DB_PORT: 5432
+      DB_USER: admin_bresil
+      DB_PASSWORD: password_bresil
+      DB_NAME: db_bresil
+
+
+      # --- Configuration Métier (Surcharges) ---
+      TEMPERATURE_IDEALE: 29
+      HUMIDITE_IDEALE: 55
+      TOLERANCE_TEMPERATURE: 2
+      TOLERANCE_HUMIDITE: 5
+
+      # --- Configuration MQTT ---
       MQTT_BROKER_URI: tcp://bresil-mqtt:1883
-      # Configuration pour que le pays puisse écrire/lire au siège via Docker
+      MQTT_TOPIC: futurekawa/bresil/entrepot1/data
+      SIEGE_DB_HOST: siege-db
+    restart: always
+
+
+  # ==========================================
+  # PARTIE 2 : INFRASTRUCTURE PAYS (COLOMBIE)
+  # ==========================================
+  mqtt-broker-colombie:
+    image: eclipse-mosquitto:latest
+    container_name: colombie-mqtt
+    networks:
+      - colombie-net
+    ports:
+      - "1884:1883"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+    restart: always
+
+  db_colombie:
+    image: postgres:15-alpine
+    container_name: colombie-db
+    networks:
+      - colombie-net
+    environment:
+      POSTGRES_USER: admin_colombie
+      POSTGRES_PASSWORD: password_colombie
+      POSTGRES_DB: db_colombie
+    ports:
+      - "5435:5432" # Port externe 5435 pour ne pas avoir de conflit avec le siège
+    volumes:
+      - colombie_data:/var/lib/postgresql/data
+      - ./postgres/init_colombie.sql:/docker-entrypoint-initdb.d/init_colombie.sql
+
+    restart: always
+
+  adminer-colombie:
+    image: adminer
+    container_name: colombie-adminer
+    networks:
+      - colombie-net
+    ports:
+      - "8082:8080" # Accès Adminer colombie sur http://localhost:8082
+    restart: always
+
+  backend-colombie:
+    image: selimdrici/backend_future_kawa:1.1.28-SNAPSHOT
+    container_name: colombie-backend
+    networks:
+      - colombie-net
+      - global-net # Réseau partagé pour parler à la BDD du siège
+    depends_on:
+      - db_colombie
+      - mqtt-broker-colombie
+    ports:
+      - "8079:8080"
+    environment:
+      # --- Connexion Base de Données ---
+      DB_HOST: colombie-db
+      DB_PORT: 5432
+      DB_USER: admin_colombie
+      DB_PASSWORD: password_colombie
+      DB_NAME: db_colombie
+
+      # --- Configuration Métier (Surcharges) ---
+      TEMPERATURE_IDEALE: 26
+      HUMIDITE_IDEALE: 80
+      TOLERANCE_TEMPERATURE: 2
+      TOLERANCE_HUMIDITE: 5
+
+      # --- Configuration MQTT ---
+      MQTT_BROKER_URI: tcp://colombie-mqtt:1883
+      MQTT_TOPIC: futurekawa/colombie/data
       SIEGE_DB_HOST: siege-db
     restart: always
 
   # ==========================================
-  # PARTIE 2 : INFRASTRUCTURE SIÈGE (FRANCE)
+  # PARTIE 3 : INFRASTRUCTURE PAYS (COLOMBIE)
+  # ==========================================
+  mqtt-broker-equateur:
+    image: eclipse-mosquitto:latest
+    container_name: equateur-mqtt
+    networks:
+      - equateur-net
+    ports:
+      - "1885:1883"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+    restart: always
+
+  db_equateur:
+    image: postgres:15-alpine
+    container_name: equateur-db
+    networks:
+      - equateur-net
+    environment:
+      POSTGRES_USER: admin_equateur
+      POSTGRES_PASSWORD: password_equateur
+      POSTGRES_DB: db_equateur
+    ports:
+      - "5436:5432" # Port externe 5436 pour ne pas avoir de conflit avec le siège
+    volumes:
+      - equateur_data:/var/lib/postgresql/data
+      - ./postgres/init_equateur.sql:/docker-entrypoint-initdb.d/init_equateur.sql
+
+    restart: always
+
+  adminer-equateur:
+    image: adminer
+    container_name: equateur-adminer
+    networks:
+      - equateur-net
+    ports:
+      - "8086:8080" # Accès Adminer equateur sur http://localhost:8082
+    restart: always
+
+  backend-equateur:
+    image: selimdrici/backend_future_kawa:1.1.28-SNAPSHOT
+    container_name: equateur-backend
+    networks:
+      - equateur-net
+      - global-net # Réseau partagé pour parler à la BDD du siège
+    depends_on:
+      - db_equateur
+      - mqtt-broker-equateur
+    ports:
+      - "8078:8080"
+    environment:
+      # --- Connexion Base de Données ---
+      DB_HOST: equateur-db
+      DB_PORT: 5432
+      DB_USER: admin_equateur
+      DB_PASSWORD: password_equateur
+      DB_NAME: db_equateur
+
+      # --- Configuration Métier (Surcharges) ---
+      TEMPERATURE_IDEALE: 31
+      HUMIDITE_IDEALE: 60
+      TOLERANCE_TEMPERATURE: 2
+      TOLERANCE_HUMIDITE: 5
+
+      # --- Configuration MQTT ---
+      MQTT_BROKER_URI: tcp://equateur-mqtt:1883
+      MQTT_TOPIC: futurekawa/equateur/data
+      SIEGE_DB_HOST: siege-db
+    restart: always
+
+  # ==========================================
+  # PARTIE 4 : INFRASTRUCTURE SIÈGE
   # ==========================================
   db-siege:
     image: postgres:15-alpine
@@ -93,9 +248,13 @@ services:
 # RÉSEAUX ET VOLUMES
 # ==========================================
 networks:
-  bresil-net: # Réseau privé du pays (IoT + BDD locale)
+  bresil-net: # Réseau privé du BRESIL (IoT + BDD locale + MQTT)
+  colombie-net: # Réseau privé de la COLOMBIE (IoT + BDD locale + MQTT)
+  equateur-net: # Réseau privé de la COLOMBIE (IoT + BDD locale + MQTT)
   global-net:  # Réseau d'échange entre le Pays et le Siège
 
 volumes:
-  pays_data:
+  colombie_data:
+  equateur_data:
+  bresil_data:
   siege_data:
