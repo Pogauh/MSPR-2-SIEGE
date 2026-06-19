@@ -44,4 +44,8 @@ public class InventaireService {
     public LotStatusResponseDto updateEmplacementLot(UUID idLot, String pays, LotEmplacementRequestDto zoneRequest) {
         return inventairePort.updateEmplacementLot(idLot, pays, zoneRequest);
     }
+
+    public HistoriqueStatusDto stockOut(UUID idLot, String pays) {
+        return inventairePort.stockOut(idLot, pays);
+    }
 }

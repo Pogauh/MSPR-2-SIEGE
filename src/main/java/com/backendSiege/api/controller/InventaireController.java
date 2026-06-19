@@ -76,4 +76,10 @@ public class InventaireController {
         LotStatusResponseDto updatedLot = inventaireService.updateEmplacementLot(idLot, pays, request);
         return ResponseEntity.ok(updatedLot);
     }
+
+    @PostMapping("/mouvements/stockout")
+    public ResponseEntity<HistoriqueStatusDto> stockOutLot(@RequestParam("idLot") UUID idLot, @RequestParam String pays) {
+        HistoriqueStatusDto updatedLot = inventaireService.stockOut(idLot, pays);
+        return ResponseEntity.ok(updatedLot);
+    }
 }

@@ -109,6 +109,22 @@ SELECT
 FROM capteur_seed
     ON CONFLICT (id_zone) DO NOTHING;
 
+INSERT INTO zone (id_zone, nom, id_entrepot)
+VALUES (
+           uuid_generate_v4(),
+           'AF',
+           '770e8400-e29b-41d4-a716-446655440011'
+       )
+    ON CONFLICT (nom, id_entrepot) DO NOTHING;
+
+INSERT INTO capteur (id_capteur, code_serie, id_zone)
+VALUES (
+           '4da39f51-970b-4b9d-9a2a-d092af0d10f2',
+           '02:AA:BB:CC:DD:AF',
+           (SELECT id_zone FROM zone WHERE nom = 'AF' LIMIT 1)
+    );
+
+
 INSERT INTO exploitation (id_exploitation, nom, adresse)
 VALUES ('aa0e8400-e29b-41d4-a716-446655440022', 'Exploitation Flamenco', '804 rue du Barista')
     ON CONFLICT (id_exploitation) DO NOTHING;

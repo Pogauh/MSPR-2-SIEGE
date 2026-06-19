@@ -23,4 +23,5 @@ public interface InventairePort {
 
     LotStatusResponseDto updateEmplacementLot(UUID idLot, String pays, LotEmplacementRequestDto zoneRequest);
 
+    HistoriqueStatusDto stockOut(UUID idLot, String pays);
 }

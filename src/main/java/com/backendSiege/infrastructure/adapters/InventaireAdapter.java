@@ -225,4 +225,22 @@ public class InventaireAdapter implements InventairePort {
                 .bodyToMono(LotStatusResponseDto.class)
                 .block();
     }
+
+    @Override
+    public HistoriqueStatusDto stockOut(UUID idLot, String pays) {
+        WebClient targetClient = countryWebClients.get(pays.trim().toUpperCase());
+        if (targetClient == null) {
+            log.warn("Aucun WebClient configuré pour le pays fourni : {}", pays);
+            return null;
+        }
+        return targetClient.post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("lots/stock-out")
+                        .queryParam("lotId", idLot)
+                        .build())
+
+                .retrieve()
+                .bodyToMono(HistoriqueStatusDto.class)
+                .block();
+    }
 }

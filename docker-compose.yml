@@ -42,7 +42,7 @@ services:
     restart: always
 
   backend-bresil:
-    image: selimdrici/backend_future_kawa:1.1.29-SNAPSHOT
+    image: selimdrici/backend_future_kawa:1.1.31-SNAPSHOT
     container_name: bresil-backend
     networks:
       - bresil-net
@@ -115,7 +115,7 @@ services:
     restart: always
 
   backend-colombie:
-    image: selimdrici/backend_future_kawa:1.1.29-SNAPSHOT
+    image: selimdrici/backend_future_kawa:1.1.31-SNAPSHOT
     container_name: colombie-backend
     networks:
       - colombie-net
@@ -187,7 +187,7 @@ services:
     restart: always
 
   backend-equateur:
-    image: selimdrici/backend_future_kawa:1.1.29-SNAPSHOT
+    image: selimdrici/backend_future_kawa:1.1.31-SNAPSHOT
     container_name: equateur-backend
     networks:
       - equateur-net
