@@ -1,10 +1,7 @@
 package com.backendSiege.domain.service;
 
-import com.backendSiege.api.dto.LotRequestDto;
-import com.backendSiege.api.dto.LotStatusResponseDto;
-import com.backendSiege.api.dto.MesureLotResponseDto;
+import com.backendSiege.api.dto.*;
 import com.backendSiege.domain.port.InventairePort;
-import com.backendSiege.api.dto.LotResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +35,9 @@ public class InventaireService {
     }
     public LotStatusResponseDto createLot(LotRequestDto lot, String pays) {
         return inventairePort.createLot(lot, pays);
+    }
+
+    public LotStatusResponseDto updateStatusLot(UUID idLot, String pays, LotStatusRequestDto statusRequest) {
+        return inventairePort.updateStatusLot(idLot, pays, statusRequest);
     }
 }

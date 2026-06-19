@@ -188,4 +188,27 @@ public class InventaireAdapter implements InventairePort {
     }
 
 
+    @Override
+    public LotStatusResponseDto updateStatusLot(UUID idLot, String pays, LotStatusRequestDto statusRequest) {
+        WebClient targetClient = countryWebClients.get(pays.trim().toUpperCase());
+        if (targetClient == null) {
+            log.warn("Aucun WebClient configuré pour le pays fourni : {}", pays);
+            return null;
+        }
+        return targetClient.put()
+                .uri("lots/{idLot}/status", idLot)
+                .bodyValue(statusRequest)
+                .exchangeToMono(response -> {
+                    if (response.statusCode().is2xxSuccessful()) {
+                        return response.bodyToMono(LotStatusResponseDto.class)
+                                .doOnError(err -> log.error("Erreur de parsing updateStatusLot", err));
+                    }
+                    return Mono.empty();
+                })
+                .onErrorResume(ex -> {
+                    log.error("Appel createLot KO pour cet adapter", ex);
+                    return Mono.empty();
+                })
+                .block();
+    }
 }

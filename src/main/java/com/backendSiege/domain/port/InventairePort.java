@@ -1,9 +1,6 @@
 package com.backendSiege.domain.port;
 
-import com.backendSiege.api.dto.LotRequestDto;
-import com.backendSiege.api.dto.LotResponseDto;
-import com.backendSiege.api.dto.LotStatusResponseDto;
-import com.backendSiege.api.dto.MesureLotResponseDto;
+import com.backendSiege.api.dto.*;
 
 import java.util.UUID;
 import java.util.List;
@@ -21,4 +18,6 @@ public interface InventairePort {
     LotResponseDto findOldestLotById(String pays);
 
     LotStatusResponseDto createLot(LotRequestDto lot, String pays);
+
+    LotStatusResponseDto updateStatusLot(UUID idLot, String pays, LotStatusRequestDto statusRequest);
 }
