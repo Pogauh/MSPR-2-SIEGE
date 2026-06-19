@@ -11,7 +11,7 @@ public interface InventairePort {
     
     LotResponseDto findLotById(UUID id);
 
-    List<LotResponseDto> findAllLots();
+    List<LotResponseDto> findAllLots(String pays);
 
     List<MesureLotResponseDto> findAllMesuresByLotId(UUID id);
 

@@ -22,8 +22,8 @@ public class InventaireService {
         return inventairePort.findLotById(id);
     }
 
-    public List<LotResponseDto> getAllLots() {
-        return inventairePort.findAllLots();
+    public List<LotResponseDto> getAllLots(String pays) {
+        return inventairePort.findAllLots(pays);
     }
 
     public List<MesureLotResponseDto> getAllMesuresByLotId(UUID id) {

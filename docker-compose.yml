@@ -42,7 +42,7 @@ services:
     restart: always
 
   backend-bresil:
-    image: selimdrici/backend_future_kawa:1.1.31-SNAPSHOT
+    image: selimdrici/backend_future_kawa:1.1.33-SNAPSHOT
     container_name: bresil-backend
     networks:
       - bresil-net
@@ -60,6 +60,11 @@ services:
       DB_PASSWORD: password_bresil
       DB_NAME: db_bresil
       NAME_API: bresil
+      MAIL_RESPONSABLE: ultrabaga@hotmail.com
+      MAIL_USERNAME: fe087aea0f4425a38b30689d245e504
+      MAIL_PASSWORD: 33c15ca39f5cb70fc5be569183e587dc
+      MAIL_PORT: 587
+      MAIL_HOST: in-v3.mailjet.com
 
       # --- Configuration Métier (Surcharges) ---
       TEMPERATURE_IDEALE: 29
@@ -115,7 +120,7 @@ services:
     restart: always
 
   backend-colombie:
-    image: selimdrici/backend_future_kawa:1.1.31-SNAPSHOT
+    image: selimdrici/backend_future_kawa:1.1.33-SNAPSHOT
     container_name: colombie-backend
     networks:
       - colombie-net
@@ -133,6 +138,11 @@ services:
       DB_PASSWORD: password_colombie
       DB_NAME: db_colombie
       NAME_API: colombie
+      MAIL_RESPONSABLE: ultrabaga@hotmail.com
+      MAIL_USERNAME: fe087aea0f4425a38b30689d245e504
+      MAIL_PASSWORD: 33c15ca39f5cb70fc5be569183e587dc
+      MAIL_PORT: 587
+      MAIL_HOST: in-v3.mailjet.com
 
       # --- Configuration Métier (Surcharges) ---
       TEMPERATURE_IDEALE: 26
@@ -187,7 +197,7 @@ services:
     restart: always
 
   backend-equateur:
-    image: selimdrici/backend_future_kawa:1.1.31-SNAPSHOT
+    image: selimdrici/backend_future_kawa:1.1.33-SNAPSHOT
     container_name: equateur-backend
     networks:
       - equateur-net
@@ -205,6 +215,12 @@ services:
       DB_PASSWORD: password_equateur
       DB_NAME: db_equateur
       NAME_API: equateur
+      MAIL_RESPONSABLE: ultrabaga@hotmail.com
+#      MAIL_USERNAME: fe087aea0f4425a38b30689d245e5045
+      MAIL_USERNAME: fe087aea0f4425a38b30689d245e504
+      MAIL_PASSWORD: 33c15ca39f5cb70fc5be569183e587dc
+      MAIL_PORT: 587
+      MAIL_HOST: in-v3.mailjet.com
 
       # --- Configuration Métier (Surcharges) ---
       TEMPERATURE_IDEALE: 31

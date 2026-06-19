@@ -5,6 +5,7 @@ import com.backendSiege.domain.service.InventaireService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.UUID;
 import java.util.List;
 
@@ -36,9 +37,18 @@ public class InventaireController {
     }
 
     @GetMapping("/lots")
-    public ResponseEntity<List<LotResponseDto>> getAllLots() {
-        List<LotResponseDto> lots = inventaireService.getAllLots();
-        return ResponseEntity.ok(lots);
+    public ResponseEntity<List<LotResponseDto>> getAllLots(@RequestParam(required = false) String pays) {
+        List<LotResponseDto> lots = inventaireService.getAllLots(pays);
+
+        if (lots == null || lots.isEmpty()) {
+            return ResponseEntity.ok(List.of());
+        }
+
+        List<LotResponseDto> lotsTries = lots.stream()
+                .sorted(Comparator.comparing(LotResponseDto::getDateStockage, Comparator.nullsLast(Comparator.naturalOrder())))
+                .toList();
+
+        return ResponseEntity.ok(lotsTries);
     }
 
     @GetMapping("/lot/{idLot}/mesures")

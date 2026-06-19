@@ -5,6 +5,7 @@ import com.backendSiege.domain.model.Entrepot;
 import com.backendSiege.domain.model.Exploitation;
 import com.backendSiege.domain.model.ZoneResponse;
 import com.backendSiege.domain.port.ReferentielPort;
+import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -31,7 +32,7 @@ public class ReferentielAdapter implements ReferentielPort {
 
         if (client == null) {
             log.error("Tentative d'appel sur un pays non configuré : {}", pays);
-            return null;
+            return List.of();
         }
         return client.get()
                 .uri("/exploitation/allExploitations")
@@ -52,7 +53,7 @@ public class ReferentielAdapter implements ReferentielPort {
 
         if (client == null) {
             log.error("Tentative d'appel sur un pays non configuré : {}", pays);
-            return null;
+            return List.of();
         }
         return client.get()
                 .uri("/entrepots")
@@ -73,7 +74,7 @@ public class ReferentielAdapter implements ReferentielPort {
 
         if (client == null) {
             log.error("Tentative d'appel sur un pays non configuré : {}", entrepotId);
-            return null;
+            return List.of();
         }
       return client.get()
                 .uri("/entrepots/{entrepotId}/zones", entrepotId)

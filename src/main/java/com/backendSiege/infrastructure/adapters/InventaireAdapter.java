@@ -118,8 +118,23 @@ public class InventaireAdapter implements InventairePort {
     }
 
     @Override
-    public List<LotResponseDto> findAllLots() {
-        return Flux.fromIterable(countryWebClients.values())
+    public List<LotResponseDto> findAllLots(String pays) {
+        java.util.Collection<WebClient> clientsToCall;
+
+        if (pays != null && !pays.isBlank()) {
+            WebClient targetClient = countryWebClients.get(pays.trim().toUpperCase());
+            if (targetClient != null) {
+                clientsToCall = List.of(targetClient);
+            } else {
+                log.warn("Pays spécifié inconnu : '{}'. Appel sur l'ensemble des backends.", pays);
+                clientsToCall = countryWebClients.values();
+            }
+        } else {
+            // Aucun pays spécifié, parcours global de la boucle
+            clientsToCall = countryWebClients.values();
+        }
+
+        return Flux.fromIterable(clientsToCall)
                 .flatMap(webClient -> webClient.get()
                         .uri("lots/allLotsFromAllEntrepots")
                         .exchangeToFlux(response -> {
