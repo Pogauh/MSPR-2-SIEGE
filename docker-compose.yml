@@ -42,7 +42,7 @@ services:
     restart: always
 
   backend-bresil:
-    image: selimdrici/backend_future_kawa:1.1.28-SNAPSHOT
+    image: selimdrici/backend_future_kawa:1.1.29-SNAPSHOT
     container_name: bresil-backend
     networks:
       - bresil-net
@@ -59,7 +59,7 @@ services:
       DB_USER: admin_bresil
       DB_PASSWORD: password_bresil
       DB_NAME: db_bresil
-
+      NAME_API: bresil
 
       # --- Configuration Métier (Surcharges) ---
       TEMPERATURE_IDEALE: 29
@@ -115,7 +115,7 @@ services:
     restart: always
 
   backend-colombie:
-    image: selimdrici/backend_future_kawa:1.1.28-SNAPSHOT
+    image: selimdrici/backend_future_kawa:1.1.29-SNAPSHOT
     container_name: colombie-backend
     networks:
       - colombie-net
@@ -132,6 +132,7 @@ services:
       DB_USER: admin_colombie
       DB_PASSWORD: password_colombie
       DB_NAME: db_colombie
+      NAME_API: colombie
 
       # --- Configuration Métier (Surcharges) ---
       TEMPERATURE_IDEALE: 26
@@ -186,7 +187,7 @@ services:
     restart: always
 
   backend-equateur:
-    image: selimdrici/backend_future_kawa:1.1.28-SNAPSHOT
+    image: selimdrici/backend_future_kawa:1.1.29-SNAPSHOT
     container_name: equateur-backend
     networks:
       - equateur-net
@@ -203,6 +204,7 @@ services:
       DB_USER: admin_equateur
       DB_PASSWORD: password_equateur
       DB_NAME: db_equateur
+      NAME_API: equateur
 
       # --- Configuration Métier (Surcharges) ---
       TEMPERATURE_IDEALE: 31
