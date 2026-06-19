@@ -1,9 +1,7 @@
 package com.backendSiege.infrastructure.adapters;
 
-import com.backendSiege.api.dto.MesureLotResponseDto;
-import com.backendSiege.api.dto.MesureResponseDto;
+import com.backendSiege.api.dto.*;
 import com.backendSiege.domain.port.InventairePort;
-import com.backendSiege.api.dto.LotResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -162,4 +160,32 @@ public class InventaireAdapter implements InventairePort {
                 .blockOptional()
                 .orElse(List.of());
     }
+
+    @Override
+    public LotStatusResponseDto createLot(LotRequestDto lot, String pays) {
+
+        WebClient targetClient = countryWebClients.get(pays.trim().toUpperCase());
+        if (targetClient == null) {
+            log.warn("Aucun WebClient configuré pour le pays fourni : {}", pays);
+            return null;
+        }
+
+        return targetClient.post()
+                .uri("lots")
+                .bodyValue(lot)
+                .exchangeToMono(response -> {
+                    if (response.statusCode().is2xxSuccessful()) {
+                        return response.bodyToMono(LotStatusResponseDto.class)
+                                .doOnError(err -> log.error("Erreur de parsing createLot", err));
+                    }
+                    return Mono.empty();
+                })
+                .onErrorResume(ex -> {
+                    log.error("Appel createLot KO pour cet adapter", ex);
+                    return Mono.empty();
+                })
+                .block();
+    }
+
+
 }

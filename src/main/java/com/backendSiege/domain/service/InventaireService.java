@@ -1,5 +1,7 @@
 package com.backendSiege.domain.service;
 
+import com.backendSiege.api.dto.LotRequestDto;
+import com.backendSiege.api.dto.LotStatusResponseDto;
 import com.backendSiege.api.dto.MesureLotResponseDto;
 import com.backendSiege.domain.port.InventairePort;
 import com.backendSiege.api.dto.LotResponseDto;
@@ -33,5 +35,8 @@ public class InventaireService {
 
     public LotResponseDto getOldestLotById(String pays) {
         return inventairePort.findOldestLotById(pays);
+    }
+    public LotStatusResponseDto createLot(LotRequestDto lot, String pays) {
+        return inventairePort.createLot(lot, pays);
     }
 }

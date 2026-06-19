@@ -1,13 +1,12 @@
 package com.backendSiege.api.controller;
 
+import com.backendSiege.api.dto.LotRequestDto;
+import com.backendSiege.api.dto.LotStatusResponseDto;
 import com.backendSiege.api.dto.MesureLotResponseDto;
 import com.backendSiege.domain.service.InventaireService;
 import com.backendSiege.api.dto.LotResponseDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 import java.util.List;
@@ -58,5 +57,12 @@ public class InventaireController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(lot);
+    }
+
+    @PostMapping("/lot")
+    public ResponseEntity<LotStatusResponseDto> createLot(@RequestBody LotRequestDto lot, @RequestParam String pays) {
+        // Call the service to create the lot
+        LotStatusResponseDto createdLot = inventaireService.createLot(lot,pays);
+        return ResponseEntity.ok(createdLot);
     }
 }
