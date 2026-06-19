@@ -20,4 +20,7 @@ public interface InventairePort {
     LotStatusResponseDto createLot(LotRequestDto lot, String pays);
 
     LotStatusResponseDto updateStatusLot(UUID idLot, String pays, LotStatusRequestDto statusRequest);
+
+    LotStatusResponseDto updateEmplacementLot(UUID idLot, String pays, LotEmplacementRequestDto zoneRequest);
+
 }

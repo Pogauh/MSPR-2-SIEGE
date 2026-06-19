@@ -69,4 +69,11 @@ public class InventaireController {
         LotStatusResponseDto updatedLot = inventaireService.updateStatusLot(idLot, pays, request);
         return ResponseEntity.ok(updatedLot);
     }
+
+    @PutMapping("/lot/{idLot}/zones")
+    public ResponseEntity<LotStatusResponseDto> updateEmplacementLot(@PathVariable("idLot") UUID idLot, @RequestParam String pays, @RequestBody LotEmplacementRequestDto request) {
+
+        LotStatusResponseDto updatedLot = inventaireService.updateEmplacementLot(idLot, pays, request);
+        return ResponseEntity.ok(updatedLot);
+    }
 }

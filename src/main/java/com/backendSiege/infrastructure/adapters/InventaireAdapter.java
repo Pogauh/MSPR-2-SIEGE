@@ -187,7 +187,6 @@ public class InventaireAdapter implements InventairePort {
                 .block();
     }
 
-
     @Override
     public LotStatusResponseDto updateStatusLot(UUID idLot, String pays, LotStatusRequestDto statusRequest) {
         WebClient targetClient = countryWebClients.get(pays.trim().toUpperCase());
@@ -209,6 +208,21 @@ public class InventaireAdapter implements InventairePort {
                     log.error("Appel createLot KO pour cet adapter", ex);
                     return Mono.empty();
                 })
+                .block();
+    }
+
+    @Override
+    public LotStatusResponseDto updateEmplacementLot(UUID idLot, String pays, LotEmplacementRequestDto zoneRequest) {
+        WebClient targetClient = countryWebClients.get(pays.trim().toUpperCase());
+        if (targetClient == null) {
+            log.warn("Aucun WebClient configuré pour le pays fourni : {}", pays);
+            return null;
+        }
+        return targetClient.put()
+                .uri("lots/{idLot}/zone", idLot)
+                .bodyValue(zoneRequest)
+                .retrieve()
+                .bodyToMono(LotStatusResponseDto.class)
                 .block();
     }
 }
