@@ -54,4 +54,12 @@ public class AuthService {
 
         return new AuthResponseDTO(token);
     }
+    public UserEntity getCurrentUser(String email) {
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(
+                        () -> new RuntimeException("Utilisateur introuvable")
+                );
+
+    }
 }

@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import com.backendSiege.api.dto.auth.MeResponseDTO;
+import com.backendSiege.infrastructure.entity.UserEntity;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -38,5 +41,17 @@ public class AuthController {
         response.addCookie(cookie);
 
         return authResponse;
+    }
+    @GetMapping("/me")
+    public MeResponseDTO me(Authentication authentication) {
+
+        UserEntity user = authService.getCurrentUser(authentication.getName());
+
+        return new MeResponseDTO(
+                user.getId(),
+                user.getEmail(),
+                user.getRoles(),
+                user.getCountryId()
+        );
     }
 }

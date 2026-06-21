@@ -23,6 +23,9 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "country_id")
+    private UUID countryId;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "user_roles",

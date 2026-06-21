@@ -1,4 +1,4 @@
--- ==========================================================
+--- ==========================================================
 -- TABLE PRINCIPALE DES UTILISATEURS
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS users (
@@ -6,7 +6,11 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
 
     -- Mot de passe stocké sous forme BCrypt
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+
+    -- Pays associé à l'utilisateur.
+    -- NULL = accès global / pas limité à un pays
+    country_id UUID
 );
 
 
@@ -16,11 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- Correspond à @ElementCollection dans UserEntity
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS user_roles (
-
-    -- Référence vers la table users
     user_id UUID NOT NULL,
-
-    -- Nom du rôle
     role VARCHAR(50) NOT NULL,
 
     CONSTRAINT fk_user
@@ -37,46 +37,47 @@ CREATE TABLE IF NOT EXISTS user_roles (
 -- password123
 --
 -- Hash BCrypt de password123
+-- country_id = NULL pour le moment
 -- ==========================================================
 
-INSERT INTO users (id, email, password)
+INSERT INTO users (id, email, password, country_id)
 VALUES
 (
 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
 'boss@siege.fr',
-'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG'
+'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG',
+NULL
 ),
-
 (
 'b2c3d4e5-f67a-8b9c-0d1e-2f3a4b5c6d7e',
 'entrepot@siege.fr',
-'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG'
+'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG',
+NULL
 ),
-
 (
 'c3d4e5f6-7a8b-9c0d-1e2f-3a4b5c6d7e8f',
 'qualite@siege.fr',
-'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG'
+'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG',
+NULL
 ),
-
 (
 'd4e5f67a-8b9c-0d1e-2f3a-4b5c6d7e8f9a',
 'ops@siege.fr',
-'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG'
+'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG',
+NULL
 ),
-
 (
 'e5f67a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b',
 'admin@siege.fr',
-'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG'
+'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG',
+NULL
 ),
-
 (
 'f6a7b8c9-0d1e-2f3a-4b5c-6d7e8f9a0b1c',
 'supply@siege.fr',
-'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG'
+'$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG',
+NULL
 )
-
 ON CONFLICT (email) DO NOTHING;
 
 
@@ -84,46 +85,32 @@ ON CONFLICT (email) DO NOTHING;
 -- ASSOCIATION UTILISATEUR -> ROLE
 --
 -- Les noms doivent être identiques à Role.java
---
--- ROLE_ADMIN
--- ROLE_HEADQUARTER
--- ROLE_WAREHOUSE_MANAGER
--- ROLE_QUALITY
--- ROLE_OPERATION_MANAGER
--- ROLE_SUPPLY_CHAIN
 -- ==========================================================
 
 INSERT INTO user_roles (user_id, role)
 VALUES
-
 (
 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
 'ROLE_HEADQUARTER'
 ),
-
 (
 'b2c3d4e5-f67a-8b9c-0d1e-2f3a4b5c6d7e',
 'ROLE_WAREHOUSE_MANAGER'
 ),
-
 (
 'c3d4e5f6-7a8b-9c0d-1e2f-3a4b5c6d7e8f',
 'ROLE_QUALITY'
 ),
-
 (
 'd4e5f67a-8b9c-0d1e-2f3a-4b5c6d7e8f9a',
 'ROLE_OPERATION_MANAGER'
 ),
-
 (
 'e5f67a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b',
 'ROLE_ADMIN'
 ),
-
 (
 'f6a7b8c9-0d1e-2f3a-4b5c-6d7e8f9a0b1c',
 'ROLE_SUPPLY_CHAIN'
 )
-
 ON CONFLICT DO NOTHING;

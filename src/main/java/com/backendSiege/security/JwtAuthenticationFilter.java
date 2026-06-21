@@ -16,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -25,12 +24,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JpaUserRepository userRepository;
 
     @Override
-    
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.startsWith("/api/auth/");
+        return path.equals("/api/auth/login") || path.equals("/api/auth/register");
     }
-        protected void doFilterInternal(
+
+    @Override
+    protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain
@@ -50,14 +50,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserEntity user = userRepository.findByEmail(email).orElse(null);
 
             if (user != null && jwtService.isTokenValid(token, user)) {
+
+                var authorities = user.getRoles()
+                        .stream()
+                        .map(role -> new SimpleGrantedAuthority(role.name()))
+                        .toList();
+
+                var userDetails = org.springframework.security.core.userdetails.User
+                        .withUsername(user.getEmail())
+                        .password(user.getPassword())
+                        .authorities(authorities)
+                        .build();
+
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
-                                user.getEmail(),
+                                userDetails,
                                 null,
-                                user.getRoles()
-                                    .stream()
-                                    .map(role -> new SimpleGrantedAuthority(role.name()))
-                                    .toList()
+                                authorities
                         );
 
                 authToken.setDetails(
