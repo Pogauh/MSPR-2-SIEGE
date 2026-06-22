@@ -11,10 +11,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import com.backendSiege.api.dto.auth.MeResponseDTO;
 import com.backendSiege.infrastructure.entity.UserEntity;
 import org.springframework.security.core.Authentication;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class AuthController {
 
     private final AuthService authService;
