@@ -26,7 +26,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.equals("/api/auth/login") || path.equals("/api/auth/register");
+        return path.equals("/api/auth/login")
+                || path.equals("/api/auth/register")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs");
     }
 
     @Override
@@ -47,6 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String email = jwtService.extractEmail(token);
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
             UserEntity user = userRepository.findByEmail(email).orElse(null);
 
             if (user != null && jwtService.isTokenValid(token, user)) {
@@ -72,6 +76,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
+                System.out.println("========== JWT DEBUG ==========");
+                System.out.println("User: " + user.getEmail());
+                System.out.println("Roles DB: " + user.getRoles());
+                System.out.println("Authorities: " + authorities);
+                System.out.println("===============================");
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }

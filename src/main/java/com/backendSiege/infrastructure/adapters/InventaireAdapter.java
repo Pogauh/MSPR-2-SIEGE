@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -241,19 +240,20 @@ public class InventaireAdapter implements InventairePort {
                 .block();
     }
 
-    @Override
+   @Override
     public HistoriqueStatusDto stockOut(UUID idLot, String pays) {
         WebClient targetClient = countryWebClients.get(pays.trim().toUpperCase());
+
         if (targetClient == null) {
             log.warn("Aucun WebClient configuré pour le pays fourni : {}", pays);
             return null;
         }
+
         return targetClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path("lots/stock-out")
                         .queryParam("lotId", idLot)
                         .build())
-
                 .retrieve()
                 .bodyToMono(HistoriqueStatusDto.class)
                 .block();
