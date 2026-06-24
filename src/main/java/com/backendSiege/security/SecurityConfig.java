@@ -55,8 +55,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/lot/*/zones")
                         .hasAnyAuthority("ROLE_ADMIN", "ROLE_WAREHOUSE_MANAGER")
 
-                        .requestMatchers(HttpMethod.GET, "/mouvements/**")
-                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_WAREHOUSE_MANAGER", "ROLE_SUPPLY_CHAIN", "ROLE_HEADQUARTER")
+                        .requestMatchers(HttpMethod.POST, "/api/lots/stock-out")
+                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_WAREHOUSE_MANAGER", "ROLE_OPERATION_MANAGER")
+
 
                         .requestMatchers(HttpMethod.POST, "/mouvements/stockout")
                         .hasAnyAuthority("ROLE_ADMIN", "ROLE_WAREHOUSE_MANAGER", "ROLE_OPERATION_MANAGER")
