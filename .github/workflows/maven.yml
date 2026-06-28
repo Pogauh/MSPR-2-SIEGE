@@ -21,6 +21,19 @@ jobs:
     - name: Build and test
       run: mvn verify
 
+    - name: Extract Maven version
+      id: project_version
+      run: mvn help:evaluate -Dexpression=project.version -q -DforceStdout > version.txt
+
+    - name: Upload JAR
+      uses: actions/upload-artifact@v4
+      with:
+        name: api-backend-siege
+        path: |
+          target/*.jar
+          version.txt
+        retention-days: 1
+
   docker:
     needs: build
     runs-on: ubuntu-latest
