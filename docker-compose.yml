@@ -263,6 +263,26 @@ services:
       - "8083:8080" # Accès Adminer Siège sur http://localhost:8083
     restart: always
 
+  backend-siege:
+    image: selimdrici/siegemspr:1.0.2-SNAPSHOT
+    container_name: siege-backend
+    networks:
+      - global-net # Réseau partagé pour parler à la BDD du siège
+    depends_on:
+      - db_siege
+    ports:
+      - "8086:8080"
+    environment:
+      # --- Connexion Base de Données ---
+      DB_HOST: db_siege_mondial
+      DB_PORT: 5432
+      DB_USER: admin_siege
+      DB_PASSWORD: password_siege
+      DB_NAME: db_siege
+      NAME_API: siege
+
+    restart: always
+
 # ==========================================
 # RÉSEAUX ET VOLUMES
 # ==========================================
