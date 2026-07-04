@@ -269,9 +269,9 @@ services:
     networks:
       - global-net # Réseau partagé pour parler à la BDD du siège
     depends_on:
-      - db_siege
+      - db-siege
     ports:
-      - "8086:8080"
+      - "8085:8080"
     environment:
       # --- Connexion Base de Données ---
       DB_HOST: db_siege_mondial

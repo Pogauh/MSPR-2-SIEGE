@@ -48,7 +48,7 @@ jobs:
       - name: Download JAR
         uses: actions/download-artifact@v4
         with:
-          name: api-backend-siege
+          name: backend-siege
           path: .
 
       - name: Read version
