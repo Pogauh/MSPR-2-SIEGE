@@ -241,13 +241,13 @@ services:
     image: postgres:15-alpine
     container_name: siege-db
     networks:
-      - global-net # Sur le réseau global pour être vu par le pays
+      - global-net
     environment:
       POSTGRES_USER: admin_siege
       POSTGRES_PASSWORD: password_siege
       POSTGRES_DB: db_siege_mondial
     ports:
-      - "5434:5432" # Port externe 5434
+      - "5434:5432"
     volumes:
       - siege_data:/var/lib/postgresql/data
       - ./postgres/init_siege.sql:/docker-entrypoint-initdb.d/init_siege.sql
@@ -267,19 +267,23 @@ services:
     image: selimdrici/siegemspr:1.0.2-SNAPSHOT
     container_name: siege-backend
     networks:
-      - global-net # Réseau partagé pour parler à la BDD du siège
+      - global-net
     depends_on:
       - db-siege
     ports:
       - "8085:8080"
     environment:
-      # --- Connexion Base de Données ---
-      DB_HOST: db_siege
+      DB_HOST: siege-db
       DB_PORT: 5432
       DB_USER: admin_siege
       DB_PASSWORD: password_siege
       DB_NAME: db_siege_mondial
       NAME_API: siege
+
+      # --- VARIABLES DE COMMUNICATION INTER-CONTENEURS ---
+      URL_BRESIL: http://bresil-backend:8080/api/
+      URL_COLOMBIE: http://colombie-backend:8080/api/
+      URL_EQUATEUR: http://equateur-backend:8080/api/
 
     restart: always
 
