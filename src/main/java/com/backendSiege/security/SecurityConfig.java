@@ -39,12 +39,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/warehouses/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/zones/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/readings/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/alertes/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/alerts/**").authenticated()
+
 
                         .requestMatchers(HttpMethod.GET, "/lots").authenticated()
                         .requestMatchers(HttpMethod.GET, "/lot/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/lot/total").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/alertes/**")
+                        .hasAuthority("ROLE_WAREHOUSE_MANAGER")
+
+                        .requestMatchers(HttpMethod.GET, "/alerts/**")
+                        .hasAuthority("ROLE_WAREHOUSE_MANAGER")
 
                         .requestMatchers(HttpMethod.POST, "/lot")
                         .hasAnyAuthority("ROLE_ADMIN", "ROLE_OPERATION_MANAGER")
@@ -54,10 +59,6 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.PUT, "/lot/*/zones")
                         .hasAnyAuthority("ROLE_ADMIN", "ROLE_WAREHOUSE_MANAGER")
-
-                        .requestMatchers(HttpMethod.POST, "/api/lots/stock-out")
-                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_WAREHOUSE_MANAGER", "ROLE_OPERATION_MANAGER")
-
 
                         .requestMatchers(HttpMethod.POST, "/mouvements/stockout")
                         .hasAnyAuthority("ROLE_ADMIN", "ROLE_WAREHOUSE_MANAGER", "ROLE_OPERATION_MANAGER")
