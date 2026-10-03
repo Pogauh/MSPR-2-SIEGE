@@ -46,10 +46,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/lot/total").authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/alertes/**")
-                        .hasAuthority("ROLE_WAREHOUSE_MANAGER")
+                        .hasAnyAuthority("ROLE_ADMIN","ROLE_WAREHOUSE_MANAGER")
 
                         .requestMatchers(HttpMethod.GET, "/alerts/**")
-                        .hasAuthority("ROLE_WAREHOUSE_MANAGER")
+                        .hasAnyAuthority("ROLE_ADMIN","ROLE_WAREHOUSE_MANAGER")
 
                         .requestMatchers(HttpMethod.POST, "/lot")
                         .hasAnyAuthority("ROLE_ADMIN", "ROLE_OPERATION_MANAGER")

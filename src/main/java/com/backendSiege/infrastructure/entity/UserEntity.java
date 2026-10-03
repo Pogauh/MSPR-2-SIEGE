@@ -24,7 +24,7 @@ public class UserEntity {
     private String password;
 
     @Column(name = "country_id")
-    private UUID countryId;
+    private String countryId;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(

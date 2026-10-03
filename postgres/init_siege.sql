@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
 
     -- Pays associé à l'utilisateur.
     -- NULL = accès global / pas limité à un pays
-    country_id UUID
+    country_id VARCHAR(255) NULL
     );
 
 
@@ -55,19 +55,19 @@ VALUES
         'b2c3d4e5-f67a-8b9c-0d1e-2f3a4b5c6d7e',
         'entrepot@siege.fr',
         '$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG',
-        NULL
+        'colombie'
     ),
     (
         'c3d4e5f6-7a8b-9c0d-1e2f-3a4b5c6d7e8f',
         'qualite@siege.fr',
         '$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG',
-        NULL
+        'colombie'
     ),
     (
         'd4e5f67a-8b9c-0d1e-2f3a-4b5c6d7e8f9a',
         'ops@siege.fr',
         '$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG',
-        NULL
+        'colombie'
     ),
     (
         'e5f67a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b',
@@ -79,7 +79,7 @@ VALUES
         'f6a7b8c9-0d1e-2f3a-4b5c-6d7e8f9a0b1c',
         'supply@siege.fr',
         '$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG',
-        NULL
+        'colombie'
     )
     ON CONFLICT (email) DO NOTHING;
 

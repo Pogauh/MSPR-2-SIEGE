@@ -14,5 +14,5 @@ public class MeResponseDTO {
     private UUID id;
     private String email;
     private Set<Role> roles;
-    private UUID countryId;
+    private String countryId;
 }
