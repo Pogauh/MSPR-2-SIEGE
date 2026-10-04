@@ -27,7 +27,7 @@ public class AuthService {
 
         Role role = request.getRole() != null
                 ? request.getRole()
-                : Role.ROLE_HEADQUARTER;
+                : Role.ROLE_HQ;
 
         UserEntity user = new UserEntity();
         user.setEmail(request.getEmail());

@@ -94,7 +94,7 @@ INSERT INTO user_roles (user_id, role)
 VALUES
     (
         'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
-        'ROLE_HEADQUARTER'
+        'ROLE_HQ'
     ),
     (
         'b2c3d4e5-f67a-8b9c-0d1e-2f3a4b5c6d7e',
@@ -106,7 +106,7 @@ VALUES
     ),
     (
         'd4e5f67a-8b9c-0d1e-2f3a-4b5c6d7e8f9a',
-        'ROLE_OPERATION_MANAGER'
+        'ROLE_FARM_MANAGER'
     ),
     (
         'e5f67a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b',
