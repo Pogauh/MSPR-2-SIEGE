@@ -61,7 +61,7 @@ VALUES
         'c3d4e5f6-7a8b-9c0d-1e2f-3a4b5c6d7e8f',
         'qualite@siege.fr',
         '$2a$10$gxHepxcprQtRsiubAFktLudW6tlOdkWfN7a03OjMxog1oVpoVaIIG',
-        'colombie'
+        NULL
     ),
     (
         'd4e5f67a-8b9c-0d1e-2f3a-4b5c6d7e8f9a',

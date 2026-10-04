@@ -264,7 +264,7 @@ services:
     restart: always
 
   backend-siege:
-    image: selimdrici/siegemspr:1.0.2-SNAPSHOT
+    image: selimdrici/siegemspr:1.0.3-SNAPSHOT
     container_name: siege-backend
     networks:
       - global-net
