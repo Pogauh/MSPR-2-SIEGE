@@ -264,7 +264,7 @@ services:
     restart: always
 
   backend-siege:
-    image: selimdrici/siegemspr:1.0.4-SNAPSHOT
+    image: selimdrici/siegemspr:1.0.5-SNAPSHOT
     container_name: siege-backend
     networks:
       - global-net
@@ -285,6 +285,21 @@ services:
       URL_COLOMBIE: http://colombie-backend:8080/api/
       URL_EQUATEUR: http://equateur-backend:8080/api/
 
+    restart: always
+
+  # ==========================================
+  # PARTIE 5 : FRONTEND
+  # ==========================================
+  frontend:
+    image: selimdrici/front-mspr-2:latest
+    container_name: siege-frontend
+    pull_policy: always # récupère à chaque "up" la dernière image publiée sur Docker Hub
+    networks:
+      - global-net # nginx proxifie /api-siege/ vers http://backend-siege:8080/
+    depends_on:
+      - backend-siege
+    ports:
+      - "3000:80" # Front accessible sur http://localhost:3000
     restart: always
 
 # ==========================================
