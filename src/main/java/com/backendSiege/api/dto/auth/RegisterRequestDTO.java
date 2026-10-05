@@ -1,11 +1,7 @@
 package com.backendSiege.api.dto.auth;
 
-import com.backendSiege.domain.model.Role;
-import lombok.Data;
+import com.backendSiege.domain.models.Role;
 
-@Data
-public class RegisterRequestDTO {
-    private String email;
-    private String password;
-    private Role role;
+/** Corps de {@code POST /api/auth/register} ; sans rôle, l'utilisateur reçoit {@code ROLE_HQ}. */
+public record RegisterRequestDTO(String email, String password, Role role) {
 }

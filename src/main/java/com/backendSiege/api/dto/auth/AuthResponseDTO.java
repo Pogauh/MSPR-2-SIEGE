@@ -1,10 +1,4 @@
 package com.backendSiege.api.dto.auth;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
-public class AuthResponseDTO {
-    private String token;
+public record AuthResponseDTO(String token) {
 }

@@ -1,11 +1,7 @@
 package com.backendSiege.api.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@Data
-public class ReportingGlobalDto {
-    public int totalLots;
-    public double avgAgeDays;
-    public double complianceRate;
-    public int countMouvementLast30Days;
+@JsonPropertyOrder({"avgAgeDays", "complianceRate", "countMouvementLast30Days", "totalLots"})
+public record ReportingGlobalDto(int totalLots, double avgAgeDays, double complianceRate, int countMouvementLast30Days) {
 }

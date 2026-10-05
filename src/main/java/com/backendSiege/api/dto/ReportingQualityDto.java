@@ -1,10 +1,7 @@
 package com.backendSiege.api.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@Data
-public class ReportingQualityDto {
-    public int alertCount;
-    public double complianceRate;
-    public int nonComplianceCount;
+@JsonPropertyOrder({"alertCount", "complianceRate", "nonComplianceCount"})
+public record ReportingQualityDto(int alertCount, double complianceRate, int nonComplianceCount) {
 }

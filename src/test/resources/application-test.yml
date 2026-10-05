@@ -1,0 +1,35 @@
+# Profil "test" : base H2 en mémoire à la place de PostgreSQL ; les URL des pays sont posées par les tests
+# (faux backends pays sur des ports libres), les seuils sont fixés pour ne dépendre d'aucune variable d'environnement.
+spring:
+  datasource:
+    url: jdbc:h2:mem:siege-test;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+
+app:
+  country-adapters:
+    mapping:
+      "BRESIL":
+        tolerences:
+          temperature-ideale: 29
+          humidite-ideale: 55
+          tolerance-temperature: 3
+          tolerance-humidite: 2
+      "COLOMBIE":
+        tolerences:
+          temperature-ideale: 26
+          humidite-ideale: 80
+          tolerance-temperature: 3
+          tolerance-humidite: 2
+      "EQUATEUR":
+        tolerences:
+          temperature-ideale: 31
+          humidite-ideale: 60
+          tolerance-temperature: 3
+          tolerance-humidite: 2

@@ -22,6 +22,28 @@ jobs:
       - name: Build and test
         run: mvn verify
 
+      - name: Upload JaCoCo report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report-${{ github.run_number }}
+          path: target/site/jacoco
+          retention-days: 7
+
+      # Entrées de l'analyse SonarQube (job "sonar" ci-dessous, désactivé par défaut)
+      - name: Upload SonarQube analysis inputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-inputs-${{ github.run_id }}
+          path: |
+            target/classes
+            target/test-classes
+            target/site/jacoco
+            target/surefire-reports
+            target/failsafe-reports
+          retention-days: 1
+
       - name: Extract Maven version
         id: project_version
         run: mvn help:evaluate -Dexpression=project.version -q -DforceStdout > version.txt
@@ -34,6 +56,16 @@ jobs:
             target/*.jar
             version.txt
           retention-days: 1
+
+  # Analyse SonarQube : DÉSACTIVÉE par défaut.
+  # Ne s'exécute que si la variable de dépôt SONAR_ENABLED vaut 'true' (voir sonar.yml pour les prérequis).
+  sonar:
+    needs: build
+    if: ${{ vars.SONAR_ENABLED == 'true' && always() && !cancelled() }}
+    uses: ./.github/workflows/sonar.yml
+    with:
+      artifact: sonar-inputs-${{ github.run_id }}
+    secrets: inherit
 
   docker:
     needs: build

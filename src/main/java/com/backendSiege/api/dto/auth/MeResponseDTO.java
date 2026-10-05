@@ -1,18 +1,11 @@
 package com.backendSiege.api.dto.auth;
 
-import com.backendSiege.domain.model.Role;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import com.backendSiege.domain.models.Role;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.Set;
 import java.util.UUID;
 
-@Getter
-@AllArgsConstructor
-public class MeResponseDTO {
-
-    private UUID id;
-    private String email;
-    private Set<Role> roles;
-    private String countryId;
+@JsonPropertyOrder({"id", "email", "roles", "countryId"})
+public record MeResponseDTO(UUID id, String email, Set<Role> roles, String countryId) {
 }
