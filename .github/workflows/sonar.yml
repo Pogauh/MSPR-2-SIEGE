@@ -1,0 +1,98 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Analyse SonarQube du backend siège (workflow réutilisable, appelé par maven.yml)
+#
+# DÉSACTIVÉ PAR DÉFAUT : le workflow appelant ne lance ce job que si la variable de dépôt
+# SONAR_ENABLED vaut 'true' (Settings > Secrets and variables > Actions > Variables).
+# Sans cela il est ignoré, au lieu de rester en attente d'un runner qui n'existe pas.
+#
+# Même principe que le front et le backend pays : SonarQube tourne en local (localhost:9000), un runner
+# self-hosted (Windows + Docker) exécute l'analyse. Pour l'activer :
+#   1. docker compose --profile sonar up -d            (SonarQube, voir le README ; inutile s'il tourne déjà pour un autre projet)
+#   2. enregistrer un runner self-hosted sur ce dépôt (Settings > Actions > Runners)
+#   3. créer le secret SONAR_TOKEN (jeton d'analyse du projet futurekawa-backend-siege)
+#   4. créer la variable SONAR_ENABLED = true
+#
+# L'analyse n'a besoin que de Docker sur le runner : Maven tourne dans le conteneur maven:3.9-eclipse-temurin-21.
+# Les classes compilées et les rapports (tests, couverture JaCoCo) viennent du job de build via un artefact.
+# sonar.qualitygate.wait=true : le job échoue si la Quality Gate échoue.
+# ─────────────────────────────────────────────────────────────────────────────
+name: SonarQube Analysis
+
+on:
+  workflow_call:
+    inputs:
+      artifact:
+        description: "Artefact du job de build : target/classes, target/test-classes, rapports de tests et target/site/jacoco"
+        required: true
+        type: string
+    secrets:
+      SONAR_TOKEN:
+        description: "Jeton d'analyse SonarQube"
+        required: false
+
+jobs:
+  sonar:
+    name: SonarQube Analysis
+    runs-on: self-hosted
+
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Downloading build outputs and coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact }}
+          path: target/
+
+      # Le jeton passe par l'environnement (masqué dans les logs) et non par la ligne de commande.
+      # host.docker.internal : depuis un conteneur Docker, désigne la machine hôte où écoute SonarQube (:9000).
+      # Le volume futurekawa-maven-repo garde le cache Maven d'une analyse à l'autre (partagé avec le backend pays).
+      - name: SonarQube Analysis & Quality Gate
+        shell: cmd
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          docker run --rm ^
+            -e SONAR_TOKEN ^
+            -v "%GITHUB_WORKSPACE%:/usr/src" ^
+            -v futurekawa-maven-repo:/root/.m2 ^
+            -w /usr/src ^
+            maven:3.9-eclipse-temurin-21 ^
+            mvn -B -ntp sonar:sonar ^
+              -Dsonar.host.url=http://host.docker.internal:9000 ^
+              -Dsonar.qualitygate.wait=true
+
+      - name: Downloading Quality Gates report
+        if: always()
+        shell: cmd
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: >
+          curl -s
+          -u "%SONAR_TOKEN%:"
+          "http://localhost:9000/api/qualitygates/project_status?projectKey=futurekawa-backend-siege"
+          -o sonar-report.json
+
+      - name: Downloading SonarQube issues
+        if: always()
+        shell: cmd
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: >
+          curl -s
+          -u "%SONAR_TOKEN%:"
+          "http://localhost:9000/api/issues/search?projectKeys=futurekawa-backend-siege"
+          -o sonar-issues.json
+
+      - name: Uploading SonarQube reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-reports-${{ github.run_id }}
+          path: |
+            sonar-report.json
+            sonar-issues.json
+          retention-days: 7

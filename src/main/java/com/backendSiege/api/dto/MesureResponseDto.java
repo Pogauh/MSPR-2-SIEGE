@@ -1,22 +1,10 @@
 package com.backendSiege.api.dto;
 
-import lombok.Data;
-import java.time.LocalDateTime;
-import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@Data
-@JsonPropertyOrder({
-    "idMesure",
-    "temperature",
-    "humidite",
-    "dateMesure",
-    "idCapteur"
-})
-public class MesureResponseDto {
-    private UUID idMesure;
-    private Double temperature;
-    private Double humidite;
-    private LocalDateTime dateMesure;
-    private UUID idCapteur;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@JsonPropertyOrder({"idMesure", "temperature", "humidite", "dateMesure", "idCapteur"})
+public record MesureResponseDto(UUID idMesure, Double temperature, Double humidite, LocalDateTime dateMesure, UUID idCapteur) {
 }

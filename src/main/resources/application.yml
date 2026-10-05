@@ -41,3 +41,10 @@ app:
             humidite-ideale: ${HUMIDITE_IDEALE:60}
             tolerance-temperature: ${TOLERANCE_TEMPERATURE:3}
             tolerance-humidite: ${TOLERANCE_HUMIDITE:2}
+
+  security:
+    jwt:
+      # Clé de signature des jetons JWT (HS512 : 64 caractères au minimum). La valeur par défaut est celle historique du
+      # siège : à remplacer par JWT_SECRET en production (changer la clé invalide les jetons déjà délivrés).
+      secret: ${JWT_SECRET:1234567890123456789012345678901234567890123456789012345678901234}
+      expiration: 24h

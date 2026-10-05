@@ -1,16 +1,9 @@
 package com.backendSiege.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.util.UUID;
 
-public class LotStatusResponseDto {
-    public UUID idLot;
-    public String status;
-
-    public LotStatusResponseDto() {
-    }
-
-    public LotStatusResponseDto(UUID idLot, String status) {
-        this.idLot = idLot;
-        this.status = status;
-    }
+@JsonPropertyOrder({"idLot", "status"})
+public record LotStatusResponseDto(UUID idLot, String status) {
 }

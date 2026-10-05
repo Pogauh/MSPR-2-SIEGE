@@ -2,6 +2,6 @@ package com.backendSiege.api.dto;
 
 import java.util.UUID;
 
-public class LotEmplacementRequestDto {
-    public UUID idZone;
+/** Corps de {@code PUT /lot/{idLot}/zones} : la zone de destination. */
+public record LotEmplacementRequestDto(UUID idZone) {
 }

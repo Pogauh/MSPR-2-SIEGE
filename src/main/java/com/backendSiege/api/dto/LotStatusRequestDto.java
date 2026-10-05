@@ -1,5 +1,5 @@
 package com.backendSiege.api.dto;
 
-public class LotStatusRequestDto {
-    public String status;
+/** Corps de {@code PUT /lot/{idLot}/status} : le nouveau statut. */
+public record LotStatusRequestDto(String status) {
 }

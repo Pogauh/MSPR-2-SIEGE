@@ -1,8 +1,9 @@
 package com.backendSiege.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.util.UUID;
 
-public class HistoriqueStatusDto {
-    public UUID idHistorique;
-    public String status;
+@JsonPropertyOrder({"idHistorique", "status"})
+public record HistoriqueStatusDto(UUID idHistorique, String status) {
 }

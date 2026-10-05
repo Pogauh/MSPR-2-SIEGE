@@ -42,7 +42,7 @@ services:
     restart: always
 
   backend-bresil:
-    image: selimdrici/backend_future_kawa:1.1.33-SNAPSHOT
+    image: selimdrici/backend_future_kawa:2.0.1-SNAPSHOT
     container_name: bresil-backend
     networks:
       - bresil-net
@@ -120,7 +120,7 @@ services:
     restart: always
 
   backend-colombie:
-    image: selimdrici/backend_future_kawa:1.1.33-SNAPSHOT
+    image: selimdrici/backend_future_kawa:2.0.1-SNAPSHOT
     container_name: colombie-backend
     networks:
       - colombie-net
@@ -197,7 +197,7 @@ services:
     restart: always
 
   backend-equateur:
-    image: selimdrici/backend_future_kawa:1.1.33-SNAPSHOT
+    image: selimdrici/backend_future_kawa:2.0.1-SNAPSHOT
     container_name: equateur-backend
     networks:
       - equateur-net
@@ -264,7 +264,7 @@ services:
     restart: always
 
   backend-siege:
-    image: selimdrici/siegemspr:2.0.0-SNAPSHOT
+    image: selimdrici/siegemspr:2.0.1-SNAPSHOT
     container_name: siege-backend
     networks:
       - global-net
@@ -302,6 +302,51 @@ services:
       - "3000:80" # Front accessible sur http://localhost:3000
     restart: always
 
+  # ==========================================
+  # PARTIE 6 : QUALITÉ DE CODE (SonarQube, profil "sonar", non démarré par défaut)
+  #   docker compose --profile sonar up -d     puis http://localhost:9000 (admin / admin au premier démarrage)
+  #   docker compose --profile sonar down      pour l'arrêter (ajouter -v pour effacer ses données)
+  # Même SonarQube que celui du projet pays (même port 9000, mêmes noms de conteneurs) : il peut servir les trois projets
+  # (pays, siège, front). S'il tourne déjà depuis le projet pays, ne pas le relancer ici.
+  # Voir le README, section « Qualité de code et couverture ».
+  # ==========================================
+  sonar-db:
+    image: postgres:15-alpine
+    container_name: futurekawa-sonar-db
+    profiles: [ "sonar" ]
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonarqube
+    volumes:
+      - sonar_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U sonar -d sonarqube" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  sonarqube:
+    image: sonarqube:26.9.0.129388-community
+    container_name: futurekawa-sonarqube
+    profiles: [ "sonar" ]
+    depends_on:
+      sonar-db:
+        condition: service_healthy
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonar-db:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonar_data:/opt/sonarqube/data
+      - sonar_extensions:/opt/sonarqube/extensions
+      - sonar_logs:/opt/sonarqube/logs
+    restart: unless-stopped
+
 # ==========================================
 # RÉSEAUX ET VOLUMES
 # ==========================================
@@ -316,3 +361,7 @@ volumes:
   equateur_data:
   bresil_data:
   siege_data:
+  sonar_db_data:
+  sonar_data:
+  sonar_extensions:
+  sonar_logs:
