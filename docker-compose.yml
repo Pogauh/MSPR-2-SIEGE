@@ -42,7 +42,7 @@ services:
     restart: always
 
   backend-bresil:
-    image: selimdrici/backend_future_kawa:2.0.1-SNAPSHOT
+    image: selimdrici/backend_future_kawa:2.0.2-SNAPSHOT
     container_name: bresil-backend
     networks:
       - bresil-net
@@ -65,6 +65,7 @@ services:
       MAIL_PASSWORD: 33c15ca39f5cb70fc5be569183e587dc
       MAIL_PORT: 587
       MAIL_HOST: in-v3.mailjet.com
+      TZ: Europe/Paris
 
       # --- Configuration Métier (Surcharges) ---
       TEMPERATURE_IDEALE: 29
@@ -120,7 +121,7 @@ services:
     restart: always
 
   backend-colombie:
-    image: selimdrici/backend_future_kawa:2.0.1-SNAPSHOT
+    image: selimdrici/backend_future_kawa:2.0.2-SNAPSHOT
     container_name: colombie-backend
     networks:
       - colombie-net
@@ -197,7 +198,7 @@ services:
     restart: always
 
   backend-equateur:
-    image: selimdrici/backend_future_kawa:2.0.1-SNAPSHOT
+    image: selimdrici/backend_future_kawa:2.0.2-SNAPSHOT
     container_name: equateur-backend
     networks:
       - equateur-net
@@ -264,7 +265,7 @@ services:
     restart: always
 
   backend-siege:
-    image: selimdrici/siegemspr:2.0.1-SNAPSHOT
+    image: selimdrici/siegemspr:2.0.2-SNAPSHOT
     container_name: siege-backend
     networks:
       - global-net
