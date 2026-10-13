@@ -42,7 +42,7 @@ services:
     restart: always
 
   backend-bresil:
-    image: selimdrici/backend_future_kawa:2.0.2-SNAPSHOT
+    image: selimdrici/backend_future_kawa:2.0.3-SNAPSHOT
     container_name: bresil-backend
     networks:
       - bresil-net
@@ -59,7 +59,7 @@ services:
       DB_USER: admin_bresil
       DB_PASSWORD: password_bresil
       DB_NAME: db_bresil
-      NAME_API: bresil
+      API_NAME: bresil
       MAIL_RESPONSABLE: ultrabaga@hotmail.com
       MAIL_USERNAME: fe087aea0f4425a38b30689d245e504
       MAIL_PASSWORD: 33c15ca39f5cb70fc5be569183e587dc
@@ -70,8 +70,8 @@ services:
       # --- Configuration Métier (Surcharges) ---
       TEMPERATURE_IDEALE: 29
       HUMIDITE_IDEALE: 55
-      TOLERANCE_TEMPERATURE: 2
-      TOLERANCE_HUMIDITE: 5
+      TOLERANCE_TEMPERATURE: 3
+      TOLERANCE_HUMIDITE: 2
 
       # --- Configuration MQTT ---
       MQTT_BROKER_URI: tcp://bresil-mqtt:1883
@@ -121,7 +121,7 @@ services:
     restart: always
 
   backend-colombie:
-    image: selimdrici/backend_future_kawa:2.0.2-SNAPSHOT
+    image: selimdrici/backend_future_kawa:2.0.3-SNAPSHOT
     container_name: colombie-backend
     networks:
       - colombie-net
@@ -138,7 +138,7 @@ services:
       DB_USER: admin_colombie
       DB_PASSWORD: password_colombie
       DB_NAME: db_colombie
-      NAME_API: colombie
+      API_NAME: colombie
       MAIL_RESPONSABLE: ultrabaga@hotmail.com
       MAIL_USERNAME: fe087aea0f4425a38b30689d245e504
       MAIL_PASSWORD: 33c15ca39f5cb70fc5be569183e587dc
@@ -148,8 +148,8 @@ services:
       # --- Configuration Métier (Surcharges) ---
       TEMPERATURE_IDEALE: 26
       HUMIDITE_IDEALE: 80
-      TOLERANCE_TEMPERATURE: 2
-      TOLERANCE_HUMIDITE: 5
+      TOLERANCE_TEMPERATURE: 3
+      TOLERANCE_HUMIDITE: 2
 
       # --- Configuration MQTT ---
       MQTT_BROKER_URI: tcp://colombie-mqtt:1883
@@ -198,7 +198,7 @@ services:
     restart: always
 
   backend-equateur:
-    image: selimdrici/backend_future_kawa:2.0.2-SNAPSHOT
+    image: selimdrici/backend_future_kawa:2.0.3-SNAPSHOT
     container_name: equateur-backend
     networks:
       - equateur-net
@@ -215,7 +215,7 @@ services:
       DB_USER: admin_equateur
       DB_PASSWORD: password_equateur
       DB_NAME: db_equateur
-      NAME_API: equateur
+      API_NAME: equateur
       MAIL_RESPONSABLE: ultrabaga@hotmail.com
 #      MAIL_USERNAME: fe087aea0f4425a38b30689d245e5045
       MAIL_USERNAME: fe087aea0f4425a38b30689d245e504
@@ -226,8 +226,8 @@ services:
       # --- Configuration Métier (Surcharges) ---
       TEMPERATURE_IDEALE: 31
       HUMIDITE_IDEALE: 60
-      TOLERANCE_TEMPERATURE: 2
-      TOLERANCE_HUMIDITE: 5
+      TOLERANCE_TEMPERATURE: 3
+      TOLERANCE_HUMIDITE: 2
 
       # --- Configuration MQTT ---
       MQTT_BROKER_URI: tcp://equateur-mqtt:1883
@@ -265,7 +265,7 @@ services:
     restart: always
 
   backend-siege:
-    image: selimdrici/siegemspr:2.0.2-SNAPSHOT
+    image: selimdrici/siegemspr:2.0.3-SNAPSHOT
     container_name: siege-backend
     networks:
       - global-net
@@ -279,7 +279,7 @@ services:
       DB_USER: admin_siege
       DB_PASSWORD: password_siege
       DB_NAME: db_siege_mondial
-      NAME_API: siege
+      API_NAME: siege
 
       # --- VARIABLES DE COMMUNICATION INTER-CONTENEURS ---
       URL_BRESIL: http://bresil-backend:8080/api/

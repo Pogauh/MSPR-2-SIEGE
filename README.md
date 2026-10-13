@@ -129,7 +129,7 @@ Tout se règle par variables d'environnement (valeurs par défaut dans `src/main
 | `URL_EQUATEUR` | `http://localhost:8078/api/` | API du backend de l'Équateur |
 | `TEMPERATURE_IDEALE` / `HUMIDITE_IDEALE` / `TOLERANCE_TEMPERATURE` / `TOLERANCE_HUMIDITE` | selon le pays | Plage climatique exposée par `GET /countries` (le même nom de variable s'applique aux 3 pays) |
 | `JWT_SECRET` | clé historique du dépôt | Clé de signature des jetons (64 caractères au minimum). **À définir en production** ; la changer invalide les jetons déjà délivrés. |
-| `SERVER_PORT` | `8080` | Port d'écoute (8085 dans `docker-compose.yml`) |
+| `SERVER_PORT` | `8080` | Port d'écoute de l'application. |
 
 Les pays se déclarent sous `app.country-adapters.mapping.<PAYS>` (`url`, `tolerences.*`) : ajouter un pays = ajouter une entrée, sans code.
 
@@ -139,7 +139,7 @@ Prérequis : Java 21, Maven 3.9+, Docker.
 
 ```powershell
 docker compose up -d db-siege                 # PostgreSQL du siège (5434) avec les utilisateurs de test
-$env:SERVER_PORT = "8085"                     # 8080 est déjà pris par le backend du Brésil dans la configuration par défaut
+$env:SERVER_PORT = "8085"
 mvn spring-boot:run
 ```
 
@@ -239,7 +239,7 @@ mvn verify     # + tests d'intégration (*IT) : API complète, clients HTTP, per
 - Couverture : `mvn verify` écrit le rapport JaCoCo (unitaires + intégration) dans `target/site/jacoco/index.html`.
 
 CI GitHub Actions (`.github/workflows/maven.yml`) : `mvn verify`, publication du rapport de couverture (artefact `jacoco-report-<run>`), analyse SonarQube
-(prévue mais désactivée, voir §9) puis publication de l'image Docker.
+(prévue mais désactivée, voir §9) puis construction et publication de l'image Docker (conditionnées à l'analyse lorsqu'elle est activée).
 
 ## 9) Qualité de code et couverture (SonarQube)
 
@@ -279,6 +279,12 @@ Il est ignoré tant que la variable de dépôt `SONAR_ENABLED` n'est pas à `tru
 L'analyse tourne dans un conteneur `maven:3.9-eclipse-temurin-21` (seul Docker est requis sur le runner), réutilise les classes et le rapport de
 couverture produits par le job de build, attend la Quality Gate (`sonar.qualitygate.wait=true`) et publie `sonar-report.json` /
 `sonar-issues.json` en artefacts.
+
+**Seuil de couverture et publication de l'image.** Quand `SONAR_ENABLED` est à `true`, l'étape « Checking minimum coverage » de `sonar.yml`
+lit la couverture globale dans SonarQube après l'analyse et fait échouer le job sous **80 %** (entrée `coverage_min`, 80 par défaut) ou si aucune
+couverture n'est remontée. Le job `docker` dépend du job `sonar` : l'image n'est construite et publiée que si l'analyse réussit (couverture ≥ 80 % et Quality Gate validée).
+Quand `SONAR_ENABLED` n'est pas à `true`, le job `sonar` est ignoré et la publication ne dépend pas de lui. Si le runner est éteint alors que la
+variable est à `true`, le job `sonar` reste en attente et **rien n'est publié** : repasser `SONAR_ENABLED` à `false` dans ce cas.
 
 La configuration de l'analyse (clé du projet, exclusions de couverture : `BackendSiegeApplication` et les DTO de l'API et des pays ; exclusion des
 tests de la détection de duplication) est dans les propriétés `sonar.*` du `pom.xml`.

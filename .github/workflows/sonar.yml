@@ -15,6 +15,10 @@
 # L'analyse n'a besoin que de Docker sur le runner : Maven tourne dans le conteneur maven:3.9-eclipse-temurin-21.
 # Les classes compilées et les rapports (tests, couverture JaCoCo) viennent du job de build via un artefact.
 # sonar.qualitygate.wait=true : le job échoue si la Quality Gate échoue.
+# Couverture minimale : après l'analyse, l'étape « Checking minimum coverage » lit la couverture globale dans SonarQube
+# et fait échouer le job si elle est inférieure à coverage_min (80 % par défaut) ou absente.
+# Les workflows appelants ne construisent et ne publient l'image Docker que si ce job réussit (ou s'il est ignoré,
+# SONAR_ENABLED n'étant pas à 'true').
 # ─────────────────────────────────────────────────────────────────────────────
 name: SonarQube Analysis
 
@@ -25,6 +29,11 @@ on:
         description: "Artefact du job de build : target/classes, target/test-classes, rapports de tests et target/site/jacoco"
         required: true
         type: string
+      coverage_min:
+        description: "Couverture globale minimale (en %) exigée dans SonarQube pour que le job réussisse"
+        required: false
+        type: number
+        default: 80
     secrets:
       SONAR_TOKEN:
         description: "Jeton d'analyse SonarQube"
@@ -64,6 +73,41 @@ jobs:
             mvn -B -ntp sonar:sonar ^
               -Dsonar.host.url=http://host.docker.internal:9000 ^
               -Dsonar.qualitygate.wait=true
+
+      # Seuil de couverture : lit la couverture globale (métrique « coverage » de SonarQube, lignes et branches) une fois
+      # l'analyse terminée et fait échouer le job sous le minimum, ou si aucune couverture n'est remontée (rapport JaCoCo non importé).
+      # Le jeton passe par l'environnement. Messages en ASCII : la console du runner Windows n'est pas en UTF-8.
+      - name: Checking minimum coverage
+        shell: powershell
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: futurekawa-backend-siege
+          COVERAGE_MIN: ${{ inputs.coverage_min }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $min = [double]$env:COVERAGE_MIN
+          $inv = [Globalization.CultureInfo]::InvariantCulture
+          $auth = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($env:SONAR_TOKEN + ':'))
+          $uri = "http://localhost:9000/api/measures/component?component=$($env:SONAR_PROJECT_KEY)&metricKeys=coverage"
+          try {
+            $res = Invoke-RestMethod -Uri $uri -Headers @{ Authorization = "Basic $auth" }
+          } catch {
+            Write-Host "::error title=API SonarQube::Lecture de la couverture impossible ($($_.Exception.Message)). Si SONAR_TOKEN est un jeton d'analyse, utiliser un jeton utilisateur (User Token)."
+            exit 1
+          }
+          $measure = $res.component.measures | Where-Object { $_.metric -eq 'coverage' } | Select-Object -First 1
+          if (-not $measure) {
+            Write-Host "::error title=Couverture absente::Aucune couverture dans SonarQube pour $($env:SONAR_PROJECT_KEY) (rapport de couverture non importe ?)"
+            exit 1
+          }
+          $coverage = [double]::Parse($measure.value, $inv)
+          $msg = "Couverture SonarQube de $($env:SONAR_PROJECT_KEY) : $($coverage.ToString('0.0', $inv)) % (minimum requis : $($min.ToString('0.#', $inv)) %)"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "### $msg"
+          if ($coverage -lt $min) {
+            Write-Host "::error title=Couverture insuffisante::$msg"
+            exit 1
+          }
+          Write-Host $msg
 
       - name: Downloading Quality Gates report
         if: always()

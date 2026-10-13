@@ -59,6 +59,7 @@ jobs:
 
   # Analyse SonarQube : DÉSACTIVÉE par défaut.
   # Ne s'exécute que si la variable de dépôt SONAR_ENABLED vaut 'true' (voir sonar.yml pour les prérequis).
+  # Activée, elle conditionne la construction et la publication de l'image Docker (job docker ci-dessous).
   sonar:
     needs: build
     if: ${{ vars.SONAR_ENABLED == 'true' && always() && !cancelled() }}
@@ -67,8 +68,12 @@ jobs:
       artifact: sonar-inputs-${{ github.run_id }}
     secrets: inherit
 
+  # Image Docker : construite et publiée seulement si le build a réussi et si l'analyse SonarQube est ignorée
+  # (SONAR_ENABLED n'est pas à 'true') ou réussie (couverture minimale et Quality Gate, voir sonar.yml).
+  # Un échec de l'analyse SonarQube bloque donc la construction et la publication de l'image.
   docker:
-    needs: build
+    needs: [build, sonar]
+    if: ${{ !cancelled() && needs.build.result == 'success' && contains(fromJSON('["success","skipped"]'), needs.sonar.result) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
